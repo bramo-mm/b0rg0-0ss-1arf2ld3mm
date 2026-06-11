@@ -1,0 +1,3153 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BORGO OSS App — Facilitatore Energetico di Comunità</title>
+  <style>
+    :root {
+      --bg: #f7f2e8;
+      --surface: #fffdfa;
+      --surface-2: #ece3d6;
+      --ink: #25323a;
+      --muted: #6f7477;
+      --line: #d9cdbf;
+      --line-strong: #c3b19a;
+      --primary: #2f6f85;
+      --primary-2: #c66f4f;
+      --accent: #d7a24a;
+      --forest: #7ea8b7;
+      --good-bg: #e8f2f4;
+      --good: #2f6f85;
+      --warn-bg: #fbefda;
+      --warn: #9a6a1f;
+      --bad-bg: #f4e2dc;
+      --bad: #b15343;
+      --shadow: 0 16px 38px rgba(64, 74, 80, .10);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --font: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: radial-gradient(circle at top left, rgba(47,111,133,.12) 0, transparent 34%), radial-gradient(circle at top right, rgba(215,162,74,.14) 0, transparent 24%), linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 30%), var(--bg);
+      color: var(--ink);
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    input, select, textarea { color: var(--ink); }
+    .app { max-width: 1320px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, var(--primary), #79a9ba 52%, #d8a04d 100%);
+      color: white;
+      border-radius: 32px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      right: -110px;
+      top: -150px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .18);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      left: -4%; right: -4%; bottom: -54px;
+      height: 138px;
+      background:
+        radial-gradient(44% 125% at 12% 0%, rgba(255,255,255,.16) 0 48%, transparent 49%),
+        radial-gradient(39% 118% at 44% 0%, rgba(255,255,255,.12) 0 48%, transparent 49%),
+        radial-gradient(42% 126% at 78% 0%, rgba(255,255,255,.18) 0 48%, transparent 49%);
+      pointer-events: none;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 24px; align-items: end; position: relative; z-index: 1; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.12); color: rgba(255,255,255,.82);
+      padding: 8px 12px; border-radius: 999px; font-size: 13px; margin-bottom: 18px;
+    }
+    h1 { margin: 0; font-size: clamp(34px, 6vw, 64px); line-height: .95; letter-spacing: -0.045em; }
+    .hero p { margin: 16px 0 0; color: rgba(255,255,255,.78); font-size: 17px; line-height: 1.55; max-width: 830px; }
+    .hero-card { background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.10)); border: 1px solid rgba(255,255,255,.20); border-radius: 24px; padding: 20px; backdrop-filter: blur(8px); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+    .hero-card strong { display: block; font-size: 22px; margin-bottom: 8px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0; }
+    .tab { border: 1px solid var(--line); background: linear-gradient(180deg, #fffdf9, #f7f0e5); color: var(--ink); padding: 11px 16px; border-radius: 999px; font-weight: 750; box-shadow: 0 4px 12px rgba(29,36,48,.04); }
+    .tab.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 8px 18px rgba(47,111,133,.22); }
+    .grid { display: grid; gap: 18px; }
+    .grid.two { grid-template-columns: 1fr 1fr; }
+    .grid.three { grid-template-columns: repeat(3, 1fr); }
+    .grid.four { grid-template-columns: repeat(4, 1fr); }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-xl); box-shadow: var(--shadow); padding: 22px; position: relative; overflow: hidden; }
+    .card::before { content:""; position:absolute; left:0; top:0; width:100%; height:4px; background: linear-gradient(90deg, var(--primary), #86b5c5 45%, var(--accent)); opacity:.9; }
+    .card.flat { box-shadow: none; }
+    .card.flat::before { opacity:.55; }
+    .section-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    .section-title h2, .section-title h3 { margin: 0; line-height: 1.1; color: var(--primary); }
+    .section-title p { margin: 6px 0 0; color: var(--muted); line-height: 1.45; font-size: 14px; }
+    .badge { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; padding: 7px 10px; border-radius: 999px; background: var(--surface-2); color: var(--primary); font-weight: 800; font-size: 12px; letter-spacing: .02em; border: 1px solid rgba(47,111,133,.12); }
+    .badge.primary { background: var(--primary); color: white; }
+    .badge.good { background: var(--good-bg); color: var(--good); border: 1px solid rgba(27,107,74,.2); }
+    .badge.warn { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(138,90,0,.2); }
+    .badge.bad { background: var(--bad-bg); color: var(--bad); border: 1px solid rgba(154,46,58,.2); }
+    .field { display: grid; gap: 8px; }
+    .field label { font-weight: 750; font-size: 13px; color: var(--ink); }
+    .field small { color: var(--muted); line-height: 1.35; }
+    input[type="text"], input[type="number"], input[type="date"], select, textarea {
+      width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 11px 12px; outline: none;
+    }
+    textarea { min-height: 88px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary-2); box-shadow: 0 0 0 3px rgba(107,31,58,.13); }
+    .button-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .btn { border: 1px solid var(--line); border-radius: 14px; padding: 11px 14px; background: var(--surface); color: var(--ink); font-weight: 800; }
+    .btn.primary { background: var(--primary); border-color: var(--primary); color: white; }
+    .btn.secondary { background: var(--primary-2); border-color: var(--primary-2); color: white; }
+    .btn.accent { background: var(--accent); border-color: var(--accent); color: white; }
+    .btn.ghost { background: transparent; }
+    .btn.small { padding: 8px 10px; font-size: 12px; border-radius: 12px; }
+    .muted { color: var(--muted); }
+    .result-card { background: linear-gradient(135deg, var(--primary), var(--forest)); color: white; border-radius: 26px; padding: 24px; }
+    .result-card .number { font-size: 62px; line-height: .9; font-weight: 850; letter-spacing: -0.04em; }
+    .result-card p { color: rgba(255,255,255,.76); line-height: 1.45; }
+    .metric { border: 1px solid var(--line); background: var(--surface); border-radius: 20px; padding: 18px; }
+    .metric .label { color: var(--muted); font-size: 13px; font-weight: 750; }
+    .metric .value { font-size: 26px; font-weight: 850; margin-top: 6px; letter-spacing: -0.02em; }
+    .metric .note { margin-top: 4px; font-size: 12px; color: var(--muted); line-height: 1.35; }
+    .bar { height: 10px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-top: 8px; }
+    .bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--primary-2)); border-radius: 999px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; text-align: left; font-size: 13px; }
+    th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; background: #f4ede2; position: sticky; top: 0; z-index: 2; }
+    .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+    .check { width: 20px; height: 20px; accent-color: var(--primary-2); }
+    .mini-input { min-width: 92px; max-width: 130px; padding: 8px !important; border-radius: 10px !important; }
+    .help-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      margin-left: 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(107,31,58,.35);
+      background: #f4e9ee;
+      color: var(--primary-2);
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 800;
+      cursor: help;
+      position: relative;
+      vertical-align: middle;
+      user-select: none;
+    }
+    .help-badge::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%);
+      width: min(330px, 82vw);
+      padding: 12px 13px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: var(--surface);
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.45;
+      text-align: left;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 30;
+    }
+    .help-badge::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 3px);
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: var(--primary);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 31;
+    }
+    .help-badge:hover::after,
+    .help-badge:focus::after,
+    .help-badge:hover::before,
+    .help-badge:focus::before { opacity: 1; }
+    .field label { display: inline-flex; align-items: center; gap: 0; }
+    th .help-badge { margin-left: 5px; transform: translateY(-1px); }
+    th .help-badge::after { bottom: auto; top: calc(100% + 10px); }
+    th .help-badge::before { bottom: auto; top: calc(100% + 3px); border-top-color: transparent; border-bottom-color: var(--primary); }
+    .guide-box {
+      border: 1px dashed rgba(198,111,79,.45);
+      background: linear-gradient(180deg, rgba(215,162,74,.12), rgba(47,111,133,.08));
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      color: var(--forest);
+    }
+    .guide-box strong { color: var(--primary); }
+
+    .wide-input { min-width: 180px; }
+    .intervention-name { min-width: 220px; }
+    .note-box { border: 1px solid var(--line); background: var(--surface); border-radius: 18px; padding: 14px; color: var(--muted); line-height: 1.45; font-size: 13px; }
+    .callout { border-left: 5px solid var(--primary-2); background: #f8f1e6; border-radius: 16px; padding: 16px; line-height: 1.48; }
+    .hidden { display: none !important; }
+    .pill-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px 12px; font-size: 13px; font-weight: 750; color: var(--ink); }
+    .roadmap-list { display: grid; gap: 12px; }
+    .roadmap-item { display: grid; grid-template-columns: 38px 1fr; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+    .roadmap-item .step { width: 34px; height: 34px; border-radius: 999px; display: grid; place-items: center; background: var(--primary); color: white; font-weight: 850; }
+    .roadmap-item h4 { margin: 0; }
+    .roadmap-item p { margin: 5px 0 0; color: var(--muted); line-height: 1.45; font-size: 13px; }
+    .service-card { border: 1px solid var(--line); border-radius: 20px; padding: 16px; background: var(--surface); }
+    .service-card.active { border-color: var(--primary-2); box-shadow: 0 0 0 3px rgba(107,31,58,.13); background: var(--surface); }
+    .fineprint { font-size: 12px; color: var(--muted); line-height: 1.45; }
+    @media (max-width: 980px) {
+      .hero-grid, .grid.two, .grid.three, .grid.four { grid-template-columns: 1fr; }
+      .app { padding: 14px; }
+      .hero { padding: 24px; }
+      th, td { white-space: nowrap; }
+    }
+
+
+    .priority-list { display:grid; gap:12px; }
+    .priority-card { display:grid; grid-template-columns: 42px 1fr; gap: 12px; border:1px solid var(--line); background:var(--surface); border-radius:18px; padding:14px; }
+    .priority-rank { width:34px; height:34px; display:grid; place-items:center; border-radius:999px; background:var(--primary); color:white; font-weight:850; }
+    .priority-card h4 { margin:0; }
+    .priority-meta { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+    .priority-meta span { border:1px solid var(--line); background:#f5efe4; border-radius:999px; padding:5px 8px; font-size:11px; font-weight:750; color:var(--muted); }
+    .priority-card p { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height:1.45; }
+    .dependency-warning { border-left: 5px solid var(--primary-2); background:#f9f1e6; border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height:1.45; }
+
+    .model3d-wrap { display:grid; grid-template-columns: 1.15fr .85fr; gap: 18px; align-items: start; }
+    .model3d-stage { background: linear-gradient(180deg, #fbfaf5, #efe4d4); border: 1px solid var(--line); border-radius: 18px; padding: 18px; min-height: 520px; position: relative; overflow: hidden; }
+    .model3d-stage::before { content:""; position:absolute; inset:auto 8% 10% 8%; height: 120px; background: radial-gradient(ellipse at center, rgba(36,37,31,.10), rgba(36,37,31,0) 70%); }
+    .model3d-svg { width: 100%; height: 470px; display:block; }
+    .model3d-legend { display:grid; gap:10px; }
+    .legend-item { display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border:1px solid var(--line); background:var(--surface); border-radius:14px; }
+    .legend-swatch { width:16px; height:16px; border-radius:4px; margin-top:2px; flex:0 0 auto; border:1px solid rgba(0,0,0,.08); }
+    .legend-item strong { display:block; font-size:13px; }
+    .legend-item span { color:var(--muted); font-size:12px; line-height:1.35; }
+    .model3d-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    .model3d-note { margin-top: 12px; font-size: 12px; color: var(--muted); line-height: 1.45; }
+    @media (max-width: 980px) { .model3d-wrap, .model3d-grid { grid-template-columns: 1fr; } .model3d-stage{min-height:420px;} .model3d-svg{height:360px;} }
+
+    
+    .case-sheet-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; }
+    .case-sheet-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+    .coastal-note { margin-top: 12px; color: rgba(255,255,255,.78); font-size: 13px; line-height: 1.45; }
+    @media (max-width: 980px) { .case-sheet-grid { grid-template-columns: 1fr 1fr; } }
+
+    @media print {
+      body { background: var(--surface); }
+      .tabs, .button-row.no-print, .hero::after { display: none !important; }
+      .app { max-width: none; padding: 0; }
+      .card { box-shadow: none; break-inside: avoid; }
+      .tab-panel.hidden { display: block !important; }
+    }
+  
+    /* Uniforma tutte le icone info in ogni pagina */
+    .tooltip-dot, .help-badge {
+      display:inline-flex !important; align-items:center; justify-content:center;
+      width:18px !important; height:18px !important; min-width:18px;
+      margin-left:6px !important; border-radius:50% !important;
+      border:1px solid var(--line-strong, #b9a895) !important;
+      background:#f7f2e8 !important; color:var(--primary, #2f6f85) !important;
+      font-size:11px !important; font-weight:700 !important; line-height:1 !important;
+      cursor:help; vertical-align:middle; position:relative;
+      text-transform:none;
+    }
+    .tooltip-dot:hover, .tooltip-dot:focus, .help-badge:hover, .help-badge:focus {
+      background:#efe4d4 !important; color:var(--ink, #25323a) !important; outline:none;
+      box-shadow:0 0 0 2px rgba(47,111,133,.10);
+    }
+
+</style>
+
+  <style id="professional-modern-overrides">
+    :root {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --surface-2: #eef0f3;
+      --ink: #1f2933;
+      --muted: #667085;
+      --line: #d0d5dd;
+      --primary: #111827;
+      --primary-2: #6d1f3d;
+      --accent: #17665a;
+      --forest: #1f3f3a;
+      --good-bg: #e7f4ef;
+      --good: #17665a;
+      --warn-bg: #fff4db;
+      --warn: #8a5a00;
+      --bad-bg: #fae7ec;
+      --bad: #9f1f45;
+      --shadow: none;
+      --radius-xl: 0px;
+      --radius-lg: 0px;
+      --radius-md: 0px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .app {
+      max-width: 1360px;
+      padding: 28px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #111827 0%, #1f3f3a 70%, #6d1f3d 100%);
+      border-radius: 0;
+      box-shadow: none;
+      border: 1px solid #111827;
+      padding: 34px;
+    }
+
+    .hero::after { display: none; }
+
+    .hero-card {
+      border-radius: 0;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.22);
+      backdrop-filter: none;
+    }
+
+    .eyebrow,
+    .tab,
+    .badge,
+    .pill,
+    .status,
+    .score-tag,
+    .small-tag,
+    .hint,
+    .tooltip-dot,
+    .button,
+    button,
+    input,
+    select,
+    textarea,
+    .metric,
+    .mini-card,
+    .service-card,
+    .roadmap-step,
+    .workflow-step,
+    .alert-card,
+    .intervention-row,
+    .table-wrap,
+    .progress,
+    .bar,
+    .dimension,
+    .case-row {
+      border-radius: 0 !important;
+    }
+
+    .tab {
+      box-shadow: none;
+      border-color: var(--line);
+      background: #ffffff;
+      color: #344054;
+      padding: 10px 14px;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .card,
+    .card.flat,
+    .metric,
+    .mini-card,
+    .service-card,
+    .roadmap-step,
+    .workflow-step,
+    .alert-card,
+    .dimension {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .card {
+      padding: 24px;
+    }
+
+    input,
+    select,
+    textarea {
+      border: 1px solid var(--line) !important;
+      background: #ffffff !important;
+      box-shadow: none !important;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(23,102,90,.22);
+      border-color: var(--accent) !important;
+    }
+
+    button {
+      box-shadow: none !important;
+    }
+
+    .primary-btn,
+    .btn-primary,
+    button.primary {
+      background: var(--primary) !important;
+      color: #ffffff !important;
+      border-color: var(--primary) !important;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #eef0f3 !important;
+      color: #344054 !important;
+      border-bottom: 1px solid var(--line);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      font-size: 11px;
+    }
+
+    td {
+      border-bottom: 1px solid #eaecf0;
+    }
+
+    .bar > span,
+    .progress > span,
+    .progress-fill {
+      border-radius: 0 !important;
+      background: var(--accent) !important;
+    }
+
+    h1 {
+      letter-spacing: -0.055em;
+    }
+
+    h2, h3 {
+      letter-spacing: -0.02em;
+    }
+
+    .section-title {
+      border-bottom: 1px solid #eaecf0;
+      padding-bottom: 14px;
+    }
+
+    .badge {
+      background: #eef0f3;
+      color: #111827;
+      border: 1px solid #d0d5dd;
+    }
+  </style>
+
+
+
+  <style id="palette-helvetica-overrides">
+    :root {
+      /* Palette ricavata dal riferimento fornito */
+      --bg: #f4f1ea;
+      --surface: #ffffff;
+      --surface-2: #e9e7dc;
+      --ink: #24241f;
+      --muted: #6d6b61;
+      --line: #d8d4c8;
+      --primary: #60662c;      /* verde oliva scuro */
+      --primary-2: #c0733a;    /* terracotta */
+      --accent: #60a3ab;       /* ottanio */
+      --forest: #909366;       /* salvia/oliva */
+      --gold: #d09b42;         /* ocra */
+      --rose: #bb7c76;         /* rosa antico */
+      --taupe: #c2a89d;        /* taupe */
+      --pale-blue: #cde1e1;    /* celeste polvere */
+      --good-bg: #e7ead8;
+      --good: #60662c;
+      --warn-bg: #f3e4c4;
+      --warn: #8e5f1f;
+      --bad-bg: #f0dfdc;
+      --bad: #9d5a54;
+      --shadow: none;
+      --radius-xl: 0px;
+      --radius-lg: 0px;
+      --radius-md: 0px;
+      --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      background: var(--bg) !important;
+      color: var(--ink) !important;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #60662c 0%, #909366 48%, #60a3ab 100%) !important;
+      border: 1px solid #60662c !important;
+      color: #ffffff !important;
+    }
+
+    .hero h1,
+    h1, h2, h3 {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    }
+
+    .hero p,
+    .hero-card span {
+      color: rgba(255,255,255,.84) !important;
+    }
+
+    .hero-card {
+      background: rgba(244,241,234,.14) !important;
+      border: 1px solid rgba(244,241,234,.34) !important;
+    }
+
+    .eyebrow {
+      background: rgba(244,241,234,.16) !important;
+      color: rgba(255,255,255,.90) !important;
+      border: 1px solid rgba(244,241,234,.30) !important;
+    }
+
+    .tab {
+      background: #ffffff !important;
+      color: #4f4f47 !important;
+      border-color: var(--line) !important;
+    }
+
+    .tab:hover {
+      border-color: #909366 !important;
+      color: #60662c !important;
+    }
+
+    .tab.active {
+      background: #60662c !important;
+      border-color: #60662c !important;
+      color: #ffffff !important;
+    }
+
+    .card,
+    .card.flat,
+    .metric,
+    .mini-card,
+    .service-card,
+    .roadmap-step,
+    .workflow-step,
+    .alert-card,
+    .dimension,
+    .table-wrap {
+      background: #ffffff !important;
+      border-color: var(--line) !important;
+    }
+
+    .section-title {
+      border-bottom-color: var(--line) !important;
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      background: #ffffff !important;
+      border-color: var(--line) !important;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(96,163,171,.28) !important;
+      border-color: #60a3ab !important;
+    }
+
+    .primary-btn,
+    .btn-primary,
+    button.primary,
+    .btn.primary {
+      background: #60662c !important;
+      border-color: #60662c !important;
+      color: #ffffff !important;
+    }
+
+    .btn:hover,
+    button:hover {
+      border-color: #909366 !important;
+    }
+
+    .result-card {
+      background: linear-gradient(120deg, #60662c 0%, #60a3ab 100%) !important;
+      border: 1px solid #60662c !important;
+    }
+
+    .bar > span,
+    .progress > span,
+    .progress-fill {
+      background: linear-gradient(90deg, #60a3ab 0%, #60662c 100%) !important;
+    }
+
+    th {
+      background: #e9e7dc !important;
+      color: #4f4f47 !important;
+      border-bottom-color: var(--line) !important;
+    }
+
+    td {
+      border-bottom-color: #e7e2d7 !important;
+    }
+
+    .badge {
+      background: #e9e7dc !important;
+      color: #60662c !important;
+      border: 1px solid #d8d4c8 !important;
+    }
+
+    .badge.good,
+    .score-tag.good,
+    .status.good {
+      background: #e7ead8 !important;
+      color: #60662c !important;
+      border-color: rgba(96,102,44,.28) !important;
+    }
+
+    .badge.warn,
+    .score-tag.warn,
+    .status.warn {
+      background: #f3e4c4 !important;
+      color: #8e5f1f !important;
+      border-color: rgba(208,155,66,.34) !important;
+    }
+
+    .badge.bad,
+    .score-tag.bad,
+    .status.bad {
+      background: #f0dfdc !important;
+      color: #9d5a54 !important;
+      border-color: rgba(187,124,118,.34) !important;
+    }
+
+    .callout {
+      background: #f1eee5 !important;
+      border-left-color: #d09b42 !important;
+    }
+
+    .note-box,
+    .hint {
+      background: #f7f5ef !important;
+      color: var(--muted) !important;
+      border-color: var(--line) !important;
+    }
+
+    .tooltip-dot {
+      background: #cde1e1 !important;
+      color: #315d63 !important;
+      border-color: #98c5ce !important;
+    }
+
+    a { color: #3d7e86 !important; }
+  </style>
+
+
+
+  <style id="palette-borghi-italiani-overrides">
+    :root {
+      /* Palette BORGO: borghi italiani, pietra, cotto, ocra, tufo e rosa antico.
+         Il verde resta solo come colore secondario per stati positivi, non come colore principale. */
+      --bg: #f6f0e7;          /* intonaco caldo */
+      --surface: #fffdf8;     /* calce */
+      --surface-2: #eadfce;   /* travertino chiaro */
+      --ink: #2b2621;         /* grafite calda */
+      --muted: #70665c;       /* pietra */
+      --line: #d9c9b6;        /* tufo */
+      --primary: #a8532d;     /* cotto */
+      --primary-2: #7b2f2b;   /* rosso mattone / borgo */
+      --accent: #d49a2d;      /* ocra */
+      --forest: #b98a72;      /* rosa antico terroso */
+      --gold: #d49a2d;
+      --rose: #bd7b72;
+      --taupe: #b9a091;
+      --pale-blue: #d7e3df;   /* acqua polverosa, solo supporto */
+      --good-bg: #ebe5d4;
+      --good: #6f6a3f;        /* oliva spento, non dominante */
+      --warn-bg: #f4e2bf;
+      --warn: #8d5b17;
+      --bad-bg: #f1dfdc;
+      --bad: #8d3832;
+      --shadow: none;
+      --radius-xl: 0px;
+      --radius-lg: 0px;
+      --radius-md: 0px;
+      --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      background:
+        linear-gradient(180deg, rgba(246,240,231,.96), rgba(246,240,231,1)),
+        radial-gradient(circle at 10% 0%, rgba(212,154,45,.14) 0, transparent 32%),
+        radial-gradient(circle at 95% 8%, rgba(123,47,43,.10) 0, transparent 26%) !important;
+      color: var(--ink) !important;
+    }
+
+    .hero {
+      background:
+        linear-gradient(115deg, #7b2f2b 0%, #a8532d 46%, #d49a2d 100%) !important;
+      border: 1px solid #7b2f2b !important;
+      color: #fffdf8 !important;
+    }
+
+    .hero-card,
+    .eyebrow {
+      background: rgba(255,253,248,.13) !important;
+      border-color: rgba(255,253,248,.34) !important;
+      color: #fffdf8 !important;
+    }
+
+    .hero p,
+    .hero-card span {
+      color: rgba(255,253,248,.86) !important;
+    }
+
+    .tab {
+      background: #fffdf8 !important;
+      color: #4f443a !important;
+      border-color: var(--line) !important;
+    }
+
+    .tab:hover {
+      border-color: #a8532d !important;
+      color: #7b2f2b !important;
+      background: #fbf6ed !important;
+    }
+
+    .tab.active {
+      background: #7b2f2b !important;
+      border-color: #7b2f2b !important;
+      color: #fffdf8 !important;
+    }
+
+    .card,
+    .card.flat,
+    .metric,
+    .mini-card,
+    .service-card,
+    .roadmap-step,
+    .workflow-step,
+    .alert-card,
+    .dimension,
+    .table-wrap {
+      background: #fffdf8 !important;
+      border-color: var(--line) !important;
+    }
+
+    .section-title {
+      border-bottom-color: var(--line) !important;
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      background: #fffdf8 !important;
+      border-color: var(--line) !important;
+      color: var(--ink) !important;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(168,83,45,.22) !important;
+      border-color: #a8532d !important;
+    }
+
+    .primary-btn,
+    .btn-primary,
+    button.primary,
+    .btn.primary,
+    .btn.secondary {
+      background: #7b2f2b !important;
+      border-color: #7b2f2b !important;
+      color: #fffdf8 !important;
+    }
+
+    .btn.accent,
+    button.accent {
+      background: #a8532d !important;
+      border-color: #a8532d !important;
+      color: #fffdf8 !important;
+    }
+
+    .btn:hover,
+    button:hover {
+      border-color: #d49a2d !important;
+    }
+
+    .result-card {
+      background: linear-gradient(120deg, #7b2f2b 0%, #a8532d 62%, #bd7b72 100%) !important;
+      border: 1px solid #7b2f2b !important;
+    }
+
+    .bar > span,
+    .progress > span,
+    .progress-fill {
+      background: linear-gradient(90deg, #d49a2d 0%, #a8532d 55%, #7b2f2b 100%) !important;
+    }
+
+    th {
+      background: #eadfce !important;
+      color: #55483c !important;
+      border-bottom-color: var(--line) !important;
+    }
+
+    td {
+      border-bottom-color: #eadfce !important;
+    }
+
+    .badge {
+      background: #eadfce !important;
+      color: #7b2f2b !important;
+      border: 1px solid #d9c9b6 !important;
+    }
+
+    .badge.primary {
+      background: #7b2f2b !important;
+      color: #fffdf8 !important;
+      border-color: #7b2f2b !important;
+    }
+
+    .badge.good,
+    .score-tag.good,
+    .status.good {
+      background: #ebe5d4 !important;
+      color: #6f6a3f !important;
+      border-color: rgba(111,106,63,.28) !important;
+    }
+
+    .badge.warn,
+    .score-tag.warn,
+    .status.warn {
+      background: #f4e2bf !important;
+      color: #8d5b17 !important;
+      border-color: rgba(212,154,45,.35) !important;
+    }
+
+    .badge.bad,
+    .score-tag.bad,
+    .status.bad {
+      background: #f1dfdc !important;
+      color: #8d3832 !important;
+      border-color: rgba(141,56,50,.30) !important;
+    }
+
+    .callout {
+      background: #f8efe2 !important;
+      border-left-color: #d49a2d !important;
+    }
+
+    .note-box,
+    .hint,
+    .guide-box {
+      background: #fbf6ed !important;
+      color: var(--muted) !important;
+      border-color: var(--line) !important;
+    }
+
+    .tooltip-dot {
+      background: #eadfce !important;
+      color: #7b2f2b !important;
+      border-color: #d9c9b6 !important;
+    }
+
+    a { color: #7b2f2b !important; }
+  </style>
+
+
+  <style id="palette-sobria-borghi-overrides">
+    :root {
+      /* Palette luminosa per BORGO OSS: calce, travertino, tufo, cotto spento, ocra polveroso.
+         Il rosso mattone non è più usato come massa dominante ma solo come micro-accento. */
+      --bg: #f5f0e8;
+      --surface: #fffdf8;
+      --surface-2: #ebe2d5;
+      --ink: #292520;
+      --muted: #6e665d;
+      --line: #d8cab8;
+      --primary: #3c3832;      /* grafite calda, colore principale */
+      --primary-2: #9b684b;    /* cotto spento, accento sobrio */
+      --accent: #b9873c;       /* ocra polveroso */
+      --forest: #7f8061;       /* oliva spento solo per stati positivi */
+      --gold: #b9873c;
+      --rose: #b98f83;
+      --taupe: #b8a596;
+      --pale-blue: #d7e2df;
+      --good-bg: #ebe8dc;
+      --good: #66694a;
+      --warn-bg: #f2e4c8;
+      --warn: #7c551c;
+      --bad-bg: #eee0dc;
+      --bad: #855044;
+      --shadow: none;
+      --radius-xl: 0px;
+      --radius-lg: 0px;
+      --radius-md: 0px;
+      --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      background: #f5f0e8 !important;
+      color: var(--ink) !important;
+    }
+
+    .app { padding-top: 28px !important; }
+
+    .hero {
+      background: #fffdf8 !important;
+      color: var(--ink) !important;
+      border: 1px solid var(--line) !important;
+      border-top: 6px solid #9b684b !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      padding: 28px 30px !important;
+    }
+
+    .hero::after { display: none !important; }
+
+    .hero h1 {
+      color: var(--ink) !important;
+      letter-spacing: -0.04em !important;
+    }
+
+    .hero p,
+    .hero-card span {
+      color: var(--muted) !important;
+    }
+
+    .hero-card {
+      background: #f4eee4 !important;
+      border: 1px solid var(--line) !important;
+      color: var(--ink) !important;
+      border-radius: 0 !important;
+      backdrop-filter: none !important;
+    }
+
+    .hero-card strong { color: var(--ink) !important; }
+
+    .eyebrow {
+      background: #f4eee4 !important;
+      color: #5a4b40 !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+    }
+
+    .tab {
+      background: #fffdf8 !important;
+      color: #514a43 !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .tab:hover {
+      border-color: #9b684b !important;
+      color: #3c3832 !important;
+      background: #f8f2e9 !important;
+    }
+
+    .tab.active {
+      background: #3c3832 !important;
+      border-color: #3c3832 !important;
+      color: #fffdf8 !important;
+    }
+
+    .card,
+    .card.flat,
+    .metric,
+    .mini-card,
+    .service-card,
+    .roadmap-step,
+    .roadmap-item,
+    .workflow-step,
+    .alert-card,
+    .dimension,
+    .table-wrap {
+      background: #fffdf8 !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .section-title {
+      border-bottom: 1px solid var(--line) !important;
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      background: #fffdf8 !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+      color: var(--ink) !important;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(155,104,75,.22) !important;
+      border-color: #9b684b !important;
+      box-shadow: none !important;
+    }
+
+    .btn,
+    button {
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .primary-btn,
+    .btn-primary,
+    button.primary,
+    .btn.primary {
+      background: #3c3832 !important;
+      border-color: #3c3832 !important;
+      color: #fffdf8 !important;
+    }
+
+    .btn.secondary,
+    button.secondary {
+      background: #9b684b !important;
+      border-color: #9b684b !important;
+      color: #fffdf8 !important;
+    }
+
+    .btn.accent,
+    button.accent {
+      background: #b9873c !important;
+      border-color: #b9873c !important;
+      color: #fffdf8 !important;
+    }
+
+    .btn:hover,
+    button:hover {
+      border-color: #9b684b !important;
+      filter: brightness(.98);
+    }
+
+    .result-card {
+      background: #3c3832 !important;
+      border: 1px solid #3c3832 !important;
+      color: #fffdf8 !important;
+      border-radius: 0 !important;
+    }
+
+    .result-card p,
+    .result-card span { color: rgba(255,253,248,.78) !important; }
+
+    .bar > span,
+    .progress > span,
+    .progress-fill {
+      background: #9b684b !important;
+      border-radius: 0 !important;
+    }
+
+    th {
+      background: #ebe2d5 !important;
+      color: #4a443e !important;
+      border-bottom: 1px solid var(--line) !important;
+    }
+
+    td { border-bottom-color: #ebe2d5 !important; }
+
+    .badge,
+    .score-tag,
+    .status {
+      background: #ebe2d5 !important;
+      color: #3c3832 !important;
+      border: 1px solid #d8cab8 !important;
+      border-radius: 0 !important;
+    }
+
+    .badge.primary {
+      background: #3c3832 !important;
+      color: #fffdf8 !important;
+      border-color: #3c3832 !important;
+    }
+
+    .badge.good,
+    .score-tag.good,
+    .status.good {
+      background: #ebe8dc !important;
+      color: #66694a !important;
+      border-color: rgba(102,105,74,.30) !important;
+    }
+
+    .badge.warn,
+    .score-tag.warn,
+    .status.warn {
+      background: #f2e4c8 !important;
+      color: #7c551c !important;
+      border-color: rgba(185,135,60,.34) !important;
+    }
+
+    .badge.bad,
+    .score-tag.bad,
+    .status.bad {
+      background: #eee0dc !important;
+      color: #855044 !important;
+      border-color: rgba(133,80,68,.30) !important;
+    }
+
+    .callout {
+      background: #f8f2e9 !important;
+      border-left: 4px solid #9b684b !important;
+      border-radius: 0 !important;
+    }
+
+    .note-box,
+    .hint,
+    .guide-box {
+      background: #f8f2e9 !important;
+      color: var(--muted) !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 0 !important;
+    }
+
+    .tooltip-dot {
+      background: #ebe2d5 !important;
+      color: #3c3832 !important;
+      border: 1px solid #d8cab8 !important;
+      border-radius: 0 !important;
+    }
+
+    .roadmap-item .step {
+      background: #3c3832 !important;
+      color: #fffdf8 !important;
+      border-radius: 0 !important;
+    }
+
+    .service-card.active {
+      border-color: #9b684b !important;
+      box-shadow: inset 4px 0 0 #9b684b !important;
+      background: #fffdf8 !important;
+    }
+
+    a { color: #7f543e !important; }
+  </style>
+
+
+
+  <style id="palette-luminosa-borghi-overrides">
+    :root {
+      --bg: #fbf3e5;
+      --surface: #fffaf0;
+      --surface-2: #f2e4cf;
+      --ink: #2f2923;
+      --muted: #73685d;
+      --line: #decbb2;
+      --primary: #2f2923;
+      --primary-2: #b96339;
+      --accent: #d99f35;
+      --teal: #4ea0a7;
+      --teal-soft: #d5e8e6;
+      --rose: #c77975;
+      --taupe: #c5a99c;
+      --olive-soft: #9b9b67;
+      --good-bg: #eef0de;
+      --good: #60683f;
+      --warn-bg: #fff0ce;
+      --warn: #8c5d12;
+      --bad-bg: #f7dfdc;
+      --bad: #95423d;
+      --shadow: 0 12px 32px rgba(93, 63, 38, .10);
+      --radius-xl: 0px;
+      --radius-lg: 0px;
+      --radius-md: 0px;
+      --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(217,159,53,.22) 0, transparent 30%),
+        radial-gradient(circle at 92% 6%, rgba(78,160,167,.20) 0, transparent 26%),
+        linear-gradient(180deg, #fff8ea 0%, #fbf3e5 48%, #f7ead9 100%) !important;
+      color: var(--ink) !important;
+    }
+
+    .app { padding-top: 30px !important; }
+
+    .hero {
+      position: relative !important;
+      background: linear-gradient(135deg, #fffaf0 0%, #fff4dc 58%, #f7dfc7 100%) !important;
+      color: var(--ink) !important;
+      border: 1px solid var(--line) !important;
+      border-top: 0 !important;
+      box-shadow: var(--shadow) !important;
+      padding: 34px 34px 30px !important;
+      overflow: hidden !important;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 8px;
+      background: linear-gradient(90deg, #d99f35 0%, #b96339 34%, #c77975 64%, #4ea0a7 100%);
+      display: block !important;
+      z-index: 2;
+    }
+
+    .hero::after {
+      display: block !important;
+      content: "" !important;
+      position: absolute !important;
+      width: 420px !important;
+      height: 420px !important;
+      right: -210px !important;
+      top: -190px !important;
+      border-radius: 0 !important;
+      background: linear-gradient(135deg, rgba(217,159,53,.18), rgba(78,160,167,.16)) !important;
+      transform: rotate(10deg) !important;
+      z-index: 0 !important;
+    }
+
+    .hero-grid { position: relative !important; z-index: 3 !important; }
+    .hero h1 { color: var(--ink) !important; letter-spacing: -0.045em !important; }
+    .hero p, .hero-card span { color: #67584d !important; }
+
+    .hero-card {
+      background: rgba(255,255,255,.62) !important;
+      border: 1px solid #e8d3b6 !important;
+      color: var(--ink) !important;
+      box-shadow: 0 10px 24px rgba(144, 94, 44, .08) !important;
+    }
+    .hero-card strong { color: #3b2e27 !important; }
+
+    .eyebrow {
+      background: #fffdf7 !important;
+      color: #5b4c42 !important;
+      border: 1px solid #e8d3b6 !important;
+      box-shadow: 0 5px 14px rgba(144, 94, 44, .08) !important;
+    }
+
+    .tabs { gap: 8px !important; }
+    .tab {
+      background: rgba(255,250,240,.90) !important;
+      color: #4d433a !important;
+      border: 1px solid #ddc8aa !important;
+      box-shadow: 0 6px 18px rgba(95, 66, 41, .06) !important;
+      transition: background .15s ease, border-color .15s ease, transform .15s ease !important;
+    }
+    .tab:hover {
+      border-color: #d99f35 !important;
+      background: #fff4dd !important;
+      color: #2f2923 !important;
+      transform: translateY(-1px);
+    }
+    .tab.active {
+      background: #b96339 !important;
+      border-color: #b96339 !important;
+      color: #fffaf0 !important;
+    }
+
+    .card,
+    .card.flat,
+    .metric,
+    .mini-card,
+    .service-card,
+    .roadmap-step,
+    .roadmap-item,
+    .workflow-step,
+    .alert-card,
+    .dimension,
+    .table-wrap {
+      background: rgba(255,250,240,.96) !important;
+      border: 1px solid var(--line) !important;
+      box-shadow: 0 10px 28px rgba(100, 71, 46, .07) !important;
+    }
+
+    .section-title {
+      border-bottom: 1px solid #e6d2b7 !important;
+      padding-bottom: 13px !important;
+    }
+
+    .section-title h2,
+    .section-title h3 { color: #312921 !important; }
+    .section-title p { color: #73685d !important; }
+
+    input,
+    select,
+    textarea {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      background: #fffdf8 !important;
+      border: 1px solid #d9c2a4 !important;
+      color: var(--ink) !important;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(78,160,167,.28) !important;
+      border-color: #4ea0a7 !important;
+      box-shadow: none !important;
+    }
+
+    .btn,
+    button { border-radius: 0 !important; }
+    .primary-btn,
+    .btn-primary,
+    button.primary,
+    .btn.primary {
+      background: #2f2923 !important;
+      border-color: #2f2923 !important;
+      color: #fffaf0 !important;
+    }
+    .btn.secondary,
+    button.secondary {
+      background: #b96339 !important;
+      border-color: #b96339 !important;
+      color: #fffaf0 !important;
+    }
+    .btn.accent,
+    button.accent {
+      background: #4ea0a7 !important;
+      border-color: #4ea0a7 !important;
+      color: #fffaf0 !important;
+    }
+
+    .result-card {
+      background: linear-gradient(135deg, #fffaf0 0%, #fff0cc 66%, #d5e8e6 100%) !important;
+      border: 1px solid #dfc49d !important;
+      border-top: 6px solid #d99f35 !important;
+      color: #2f2923 !important;
+      box-shadow: var(--shadow) !important;
+    }
+    .result-card .number { color: #b96339 !important; }
+    .result-card p,
+    .result-card span { color: #66574b !important; }
+    .result-card .muted { color: #66574b !important; }
+
+    .bar { background: #f0dfc8 !important; }
+    .bar > span,
+    .progress > span,
+    .progress-fill {
+      background: linear-gradient(90deg, #4ea0a7 0%, #d99f35 52%, #b96339 100%) !important;
+    }
+
+    th {
+      background: #f2e4cf !important;
+      color: #4d433a !important;
+      border-bottom: 1px solid #d8b993 !important;
+    }
+    td { border-bottom-color: #ead8bf !important; }
+
+    .badge,
+    .score-tag,
+    .status {
+      background: #f2e4cf !important;
+      color: #4d433a !important;
+      border: 1px solid #dcc3a3 !important;
+    }
+    .badge.primary {
+      background: #2f2923 !important;
+      color: #fffaf0 !important;
+      border-color: #2f2923 !important;
+    }
+    .badge.good,
+    .score-tag.good,
+    .status.good { background: #eef0de !important; color: #60683f !important; border-color: rgba(96,104,63,.32) !important; }
+    .badge.warn,
+    .score-tag.warn,
+    .status.warn { background: #fff0ce !important; color: #8c5d12 !important; border-color: rgba(217,159,53,.38) !important; }
+    .badge.bad,
+    .score-tag.bad,
+    .status.bad { background: #f7dfdc !important; color: #95423d !important; border-color: rgba(199,121,117,.38) !important; }
+
+    .callout {
+      background: #fff4dd !important;
+      border-left: 4px solid #d99f35 !important;
+    }
+    .note-box,
+    .hint,
+    .guide-box {
+      background: #fff4dd !important;
+      color: #66574b !important;
+      border: 1px solid #e2cda9 !important;
+    }
+
+    .tooltip-dot,
+    .help-badge {
+      background: #d5e8e6 !important;
+      color: #2f6f75 !important;
+      border: 1px solid #9fc9cc !important;
+    }
+
+    .roadmap-item .step { background: #b96339 !important; color: #fffaf0 !important; }
+    .service-card.active { border-color: #4ea0a7 !important; box-shadow: inset 4px 0 0 #4ea0a7, 0 10px 28px rgba(100, 71, 46, .07) !important; }
+
+    .readiness-card { border-top: 6px solid #4ea0a7 !important; }
+    .compact-title { margin-bottom: 12px !important; }
+    .readiness-formula {
+      display: grid;
+      gap: 6px;
+      padding: 13px 14px;
+      background: #fff4dd;
+      border: 1px solid #e2cda9;
+      margin-bottom: 12px;
+    }
+    .readiness-formula strong { color: #2f2923; }
+    .readiness-formula span { color: #66574b; font-size: 13px; line-height: 1.4; }
+    .readiness-formula code {
+      display: block;
+      color: #3c3027;
+      background: #fffaf0;
+      border: 1px solid #e6d2b7;
+      padding: 9px 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      white-space: normal;
+    }
+    .readiness-breakdown { display: grid; gap: 8px; }
+    .readiness-row {
+      display: grid;
+      grid-template-columns: 1.25fr .45fr .45fr .55fr;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid #ead8bf;
+      padding: 8px 0;
+      font-size: 13px;
+    }
+    .readiness-row.header { color: #73685d; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; font-weight: 800; }
+    .readiness-row strong { color: #332a23; }
+    .readiness-note { margin-top: 10px; color: #66574b; font-size: 13px; line-height: 1.45; }
+
+    a { color: #8a4a2e !important; }
+
+    @media (max-width: 980px) {
+      .readiness-row { grid-template-columns: 1fr; gap: 2px; }
+      .readiness-row.header { display: none; }
+    }
+  </style>
+
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow"><span class="badge">BO</span> BORGO OSS · Building One-stop Renovation Gateway for Owners</div>
+          <h1>BORGO OSS</h1>
+          <p>App operativa in italiano per sportelli unici nei comuni medi, nei borghi costieri e nei centri interni del centro-sud: prenotazione, valutazione SCORES, scelta interventi, stima lavori, incentivi, piano finanziario, payback, roadmap, filiera locale e monitoraggio ex-post.</p>
+        </div>
+        <div class="hero-card">
+          <strong>Powered by SCORES</strong>
+          <span>Il framework SCORES struttura la valutazione multicriterio e trasforma dati tecnici, economici e sociali in una roadmap di ristrutturazione comprensibile.</span><div class="coastal-note">Palette e atmosfera visiva ispirate alla costa adriatica tra Montenero di Bisaccia, Termoli e Vasto.</div>
+        </div>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Navigazione app">
+      <button class="tab active" data-tab="contatti">1 · Contatto e agenda</button>
+      <button class="tab" data-tab="assessment">2 · Valutazione edificio</button>
+            <button class="tab" data-tab="interventi">3 · Interventi e costi</button>
+      <button class="tab" data-tab="bonus">4 · Bonus, finanza e payback</button>
+      <button class="tab" data-tab="roadmap">5 · Roadmap</button>
+      <button class="tab" data-tab="progetti">6 · Progetti e alert</button>
+      <button class="tab" data-tab="monitoraggio">7 · Monitoraggio ex-post</button>
+      <button class="tab" data-tab="modello">8 · Modello OSS</button>
+      <button class="tab" data-tab="dashboard">9 · Dashboard</button>
+    </nav>
+
+    <section id="contatti" class="tab-panel grid two">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Contatto utente e prenotazione</h2>
+            <p>Raccolta dati minimi, tema della richiesta e prenotazione del primo appuntamento con il facilitatore.</p>
+          </div>
+          <span class="badge primary">AG</span>
+        </div>
+        <div class="grid two">
+          <div class="field"><label>Nome</label><input id="firstName" type="text" value="" /></div>
+          <div class="field"><label>Cognome</label><input id="lastName" type="text" value="" /></div>
+          <div class="field"><label>Email</label><input id="email" type="text" value="" /></div>
+          <div class="field"><label>Telefono</label><input id="phone" type="text" value="" /></div>
+          <div class="field"><label>Codice fiscale, opzionale</label><input id="taxCode" type="text" value="" /></div>
+          <div class="field"><label>Soggetto</label><select id="userRole"><option>Proprietario</option><option>Amministratore di condominio</option><option>Inquilino</option><option>Tecnico</option><option>Impresa</option><option>Altro</option></select></div>
+          <div class="field"><label>Canale di primo contatto</label><select id="infoChannel"><option>Comune</option><option>Evento pubblico</option><option>Newsletter</option><option>Social network</option><option>Locandina o QR code</option><option>Passaparola</option><option>Professionista o amministratore</option></select></div>
+          <div class="field"><label>Oggetto della richiesta</label><select id="requestSubject"><option>Primo orientamento</option><option>Bonus e incentivi</option><option>Stima lavori</option><option>Confronto preventivi</option><option>Assemblea condominiale</option><option>Lavori in corso</option><option>Monitoraggio post-intervento</option></select></div>
+          <div class="field"><label>Data appuntamento</label><input id="appointmentDate" type="date" /></div>
+          <div class="field"><label>Ora appuntamento</label><input id="appointmentTime" type="text" value="09:30" /></div>
+          <div class="field"><label>Durata, minuti</label><input id="appointmentDuration" type="number" value="30" min="15" max="120" /></div>
+          <div class="field"><label>Modalità</label><select id="appointmentMode"><option>Telefono</option><option>Videochiamata</option><option>Sportello comunale</option><option>Sopralluogo</option></select></div>
+        </div>
+        <div class="button-row no-print" style="margin-top:16px">
+          <button class="btn primary" id="copyBooking">Copia conferma appuntamento</button>
+          <button class="btn secondary" id="downloadBookingIcs">Scarica appuntamento calendario</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Engagement e capacità sportello</h2>
+            <p>Strumenti per dimostrare che BORGO OSS non è solo una piattaforma, ma un servizio territoriale misurabile.</p>
+          </div>
+          <span class="badge">EG</span>
+        </div>
+        <div class="grid two">
+          <div class="field"><label>Slot disponibili a settimana</label><input id="weeklySlots" type="number" value="20" min="1" /></div>
+          <div class="field"><label>Settimane di servizio/anno</label><input id="serviceWeeks" type="number" value="48" min="1" max="52" /></div>
+          <div class="field"><label>Eventi pubblici previsti/anno</label><input id="publicEvents" type="number" value="6" min="0" /></div>
+          <div class="field"><label>Contatti attesi per evento</label><input id="contactsPerEvent" type="number" value="35" min="0" /></div>
+          <div class="field"><label>Tasso conversione contatto → assessment, %</label><input id="conversionAssessment" type="number" value="35" min="0" max="100" /></div>
+          <div class="field"><label>Tasso conversione assessment → progetto, %</label><input id="conversionProject" type="number" value="15" min="0" max="100" /></div>
+        </div>
+        <div class="grid two" style="margin-top:16px">
+          <div class="metric"><div class="label">Capacità annua appuntamenti</div><div class="value" id="annualCapacityMetric">0</div><div class="note">Slot settimanali × settimane</div></div>
+          <div class="metric"><div class="label">Contatti da eventi</div><div class="value" id="eventContactsMetric">0</div><div class="note">Eventi × contatti medi</div></div>
+          <div class="metric"><div class="label">Assessment attesi</div><div class="value" id="expectedAssessmentsMetric">0</div><div class="note">Su appuntamenti + eventi</div></div>
+          <div class="metric"><div class="label">Progetti attesi</div><div class="value" id="expectedProjectsMetric">0</div><div class="note">Conversione da assessment</div></div>
+        </div>
+        <div class="note-box" style="margin-top:16px">Questa sezione misura la capacità operativa dello sportello, il canale di provenienza degli utenti, gli eventi locali e la conversione dal primo contatto alla valutazione tecnica.</div>
+      </div>
+    </section>
+
+    <section id="assessment" class="tab-panel hidden grid two">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Valutazione edificio e utente</h2>
+            <p>Questi input alimentano la valutazione SCORES e precompilano le quantità degli interventi.</p>
+          </div>
+          <span class="badge primary">ED</span>
+        </div>
+        <div class="guide-box no-print"><strong>Guida per il facilitatore.</strong> Passa con il mouse o usa il tab sui simboli “i” vicino ai campi per vedere istruzioni di compilazione, fonte dati consigliata e controlli di coerenza. Le indicazioni servono per standardizzare il pre-assessment e ridurre la discrezionalità tra diversi operatori OSS.</div>
+        <div class="grid two">
+          <div class="field">
+            <label>Nome caso</label>
+            <input id="caseName" type="text" value="Condominio pilota" />
+          </div>
+          <div class="field">
+            <label>Comune</label>
+            <input id="town" type="text" value="Comune medio A" />
+          </div>
+          <div class="field">
+            <label>Tipologia edificio</label>
+            <select id="buildingType">
+              <option>Casa singola</option>
+              <option>Piccolo condominio</option>
+              <option selected>Condominio</option>
+              <option>Edificio misto prevalentemente residenziale</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Anno di costruzione</label>
+            <input id="year" type="number" value="1975" min="1800" max="2030" />
+          </div>
+          <div class="field">
+            <label>Superficie riscaldata indicativa, m²</label>
+            <input id="floorArea" type="number" value="1800" min="20" />
+          </div>
+          <div class="field">
+            <label>Unità immobiliari</label>
+            <input id="units" type="number" value="18" min="1" />
+          </div>
+          <div class="field">
+            <label>Classe energetica indicativa</label>
+            <select id="energyClass">
+              <option>G</option><option selected>F</option><option>E</option><option>D</option><option>C</option><option>B</option><option>A</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Spesa energetica annua attuale, €</label>
+            <input id="annualBill" type="number" value="36000" min="0" />
+          </div>
+          <div class="field">
+            <label>Scenario prevalente</label>
+            <select id="renovationScenario">
+              <option value="light">Intervento leggero</option>
+              <option value="standard" selected>Ristrutturazione standard</option>
+              <option value="deep">Deep renovation</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Profilo fiscale</label>
+            <select id="fiscalProfile">
+              <option value="main" selected>Abitazione principale</option>
+              <option value="other">Altro immobile</option>
+              <option value="mixed">Situazione mista da verificare</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Metodo bonus</label>
+            <div class="static-field" id="bonusAutoInfo">Automatico: l’app associa ogni intervento al bonus più probabile e aggiorna aliquota e recupero.</div>
+          </div>
+          <div class="field">
+            <label>ISEE basso / utente vulnerabile</label>
+            <select id="vulnerable">
+              <option value="0">No</option>
+              <option value="1" selected>Sì o possibile</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Fase decisionale</label>
+            <select id="decisionStage">
+              <option value="1">Curiosità iniziale</option>
+              <option value="2" selected>Interesse concreto</option>
+              <option value="3">Discussione in famiglia o assemblea</option>
+              <option value="4">Preventivi già richiesti</option>
+              <option value="5">Pronto a procedere</option>
+            </select>
+          </div>
+        </div>
+        <div class="button-row no-print" style="margin-top:16px">
+          <button class="btn secondary" id="applyQuantities">Aggiorna quantità interventi da stima rapida</button>
+          <button class="btn" id="demoCondominio">Esempio condominio</button>
+          <button class="btn" id="demoCasa">Esempio casa singola</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="result-card">
+          <div class="muted" style="color:rgba(255,255,255,.7); font-weight:750">SCORES Renovation Readiness</div>
+          <div class="number" id="totalScore">0</div>
+          <p id="scoreDescription">Valutazione in corso.</p>
+          <span class="badge" id="scoreBadge">Da calcolare</span>
+        </div>
+        <div class="card flat">
+          <div class="section-title">
+            <div>
+              <h3>Criteri SCORES</h3>
+              <p>Ogni dimensione è calcolata su 0-100 e normalizzata in un punteggio finale.</p>
+            </div>
+            <span class="badge">SC</span>
+          </div>
+          <div id="scoreBars" class="grid"></div>
+        </div>
+        <div class="card flat readiness-card">
+          <div class="section-title compact-title">
+            <div>
+              <h3>Come viene calcolata la readiness</h3>
+              <p>La readiness non misura solo quanto conviene energeticamente, ma quanto il caso è pronto a diventare un progetto reale.</p>
+            </div>
+            <span class="badge">RX</span>
+          </div>
+          <div class="readiness-formula">
+            <strong>Formula</strong>
+            <span>Ogni dimensione 0-100 viene trasformata in classe 1-4, pesata e normalizzata su 100.</span>
+            <code>Readiness = Σ(classe_dimensione × peso) / Σ(4 × peso) × 100</code>
+          </div>
+          <div id="readinessBreakdown" class="readiness-breakdown"></div>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1/-1">
+        <div class="section-title">
+          <div>
+            <h2>Input qualitativi SCORES</h2>
+            <p>Scale da 0 a 5. Servono a leggere non solo il potenziale energetico, ma anche fattibilità, affordability e readiness decisionale.</p>
+          </div>
+          <span class="badge">IN</span>
+        </div>
+        <div class="grid four">
+          <div class="field"><label>Criticità bollette</label><input id="billConcern" type="number" min="0" max="5" value="4" /></div>
+          <div class="field"><label>Stress di budget</label><input id="budgetStress" type="number" min="0" max="5" value="3" /></div>
+          <div class="field"><label>Documenti disponibili</label><input id="documents" type="number" min="0" max="5" value="2" /></div>
+          <div class="field"><label>Accordo tra proprietari</label><input id="ownerAgreement" type="number" min="0" max="5" value="2" /></div>
+          <div class="field"><label>Fattibilità tecnica percepita</label><input id="technicalEase" type="number" min="0" max="5" value="3" /></div>
+          <div class="field"><label>Vincoli tecnici o urbanistici</label><input id="constraints" type="number" min="0" max="5" value="1" /></div>
+          <div class="field"><label>Accesso a incentivi/finanza</label><input id="financeAccess" type="number" min="0" max="5" value="2" /></div>
+          <div class="field"><label>Urgenza e motivazione</label><input id="urgency" type="number" min="0" max="5" value="3" /></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="interventi" class="tab-panel hidden">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Interventi selezionabili e stima costi</h2>
+            <p>Seleziona solo gli interventi da considerare. Puoi modificare quantità, costo unitario, aliquota e risparmio energetico atteso.</p>
+          </div>
+          <span class="badge primary">LV</span>
+        </div>
+        <div class="guide-box no-print"><strong>Istruzioni rapide.</strong> I valori sono modificabili dal facilitatore. Usare quantità e costi come pre-stima; per preventivi e lavori aggiornare con computo metrico, massimali, prezzari e offerte. Passa sui simboli “i” nelle intestazioni della tabella per vedere come compilare ogni colonna.</div>
+
+        <div class="card flat" style="margin:16px 0">
+          <div class="section-title compact-title">
+            <div>
+              <h3>Stima rapida delle quantità quando mancano le misure</h3>
+              <p>Se l’utente non conosce superficie di facciata, serramenti o copertura, il facilitatore può stimarle dalla superficie riscaldata, dai piani e da pochi parametri tipologici.</p>
+            </div>
+            <span class="badge">ST</span>
+          </div>
+          <div class="grid four">
+            <div class="field">
+              <label>Piani fuori terra stimati <span class="tooltip-dot" tabindex="0" title="Usare il numero di piani riscaldati fuori terra. Se non noto: casa singola 1-2, piccolo condominio 2-3, condominio 4-6. Serve a ricavare impronta e facciate dalla superficie riscaldata.">i</span></label>
+              <input id="estimateFloors" type="number" value="4" min="1" step="1" />
+            </div>
+            <div class="field">
+              <label>Altezza media interpiano, m <span class="tooltip-dot" tabindex="0" title="Valore tipico 2,8-3,1 m negli edifici residenziali. Usare 3,0 m se non si hanno dati migliori.">i</span></label>
+              <input id="storeyHeight" type="number" value="3.0" min="2.4" step="0.1" />
+            </div>
+            <div class="field">
+              <label>Forma in pianta <span class="tooltip-dot" tabindex="0" title="Influenza il perimetro stimato. Compatta = edificio quasi quadrato; rettangolare = edificio allungato; irregolare = più dispersioni e perimetro maggiore.">i</span></label>
+              <select id="shapeFactor">
+                <option value="1.00">Compatta</option>
+                <option value="1.18" selected>Rettangolare/allungata</option>
+                <option value="1.35">Irregolare</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Rapporto finestre/facciata, % <span class="tooltip-dot" tabindex="0" title="Quota di facciata occupata da serramenti. Se non nota: 15-20% per edifici più vecchi, 20-30% per condomini anni 70-90, 30%+ per facciate molto vetrate.">i</span></label>
+              <input id="windowRatio" type="number" value="22" min="5" max="60" step="1" />
+            </div>
+            <div class="field">
+              <label>Copertura utilizzabile per FV, % <span class="tooltip-dot" tabindex="0" title="Quota della copertura realisticamente utilizzabile per fotovoltaico, dopo ombre, camini, lucernari, distanze e vincoli. Usare 40-60% per pre-stima.">i</span></label>
+              <input id="roofUsableRatio" type="number" value="45" min="0" max="100" step="5" />
+            </div>
+            <div class="field">
+              <label>Finestre da schermare, % <span class="tooltip-dot" tabindex="0" title="Quota dei serramenti esposti a surriscaldamento, tipicamente sud/ovest. Usare 40-60% se non si conoscono esposizioni e ombreggiamenti.">i</span></label>
+              <input id="shadingRatio" type="number" value="50" min="0" max="100" step="5" />
+            </div>
+            <div class="field">
+              <label>Modo di stima <span class="tooltip-dot" tabindex="0" title="Stima geometrica: calcola facciate, serramenti e tetto dai dati generali. Stima semplificata: usa rapporti rapidi sulla superficie riscaldata, utile quando si hanno pochissime informazioni.">i</span></label>
+              <select id="quantityMode">
+                <option value="geometric" selected>Stima geometrica rapida</option>
+                <option value="simple">Stima semplificata da superficie</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Affidabilità della stima</label>
+              <div class="static-field" id="estimateReliability">Da calcolare</div>
+            </div>
+          </div>
+          <div class="grid four" style="margin-top:14px">
+            <div class="metric"><div class="label">Impronta stimata</div><div class="value" id="estFootprintMetric">0 m²</div><div class="note">Superficie riscaldata / piani</div></div>
+            <div class="metric"><div class="label">Facciata opaca stimata</div><div class="value" id="estOpaqueFacadeMetric">0 m²</div><div class="note">Per cappotto</div></div>
+            <div class="metric"><div class="label">Serramenti stimati</div><div class="value" id="estWindowsMetric">0 m²</div><div class="note">Da rapporto finestre/facciata</div></div>
+            <div class="metric"><div class="label">FV stimabile</div><div class="value" id="estPvMetric">0 kW</div><div class="note">Circa 6 m²/kW</div></div>
+          </div>
+          
+          <div class="card flat" style="margin-top:16px">
+            <div class="section-title compact-title">
+              <div>
+                <h3>Anteprima 3D dell’edificio di base</h3>
+                <p>Il modello mostra solo la volumetria di base stimata, senza interventi. Serve per capire se le misure e i rapporti inseriti assomigliano all’edificio reale.</p>
+              </div>
+              <span class="badge">3D</span>
+            </div>
+            <div class="model3d-wrap">
+              <div class="model3d-stage" style="min-height:460px">
+                <svg id="building3dSvg" class="model3d-svg" viewBox="0 0 760 520" xmlns="http://www.w3.org/2000/svg" aria-label="Modello 3D edificio"></svg>
+              </div>
+              <div>
+                <div class="model3d-grid">
+                  <div class="metric"><div class="label">Piani</div><div class="value" id="modelFloorsMetric">0</div><div class="note">Parametro volumetrico</div></div>
+                  <div class="metric"><div class="label">Facciata opaca</div><div class="value" id="modelFacadeMetric">0 m²</div><div class="note">Stima involucro</div></div>
+                  <div class="metric"><div class="label">Serramenti</div><div class="value" id="modelWindowsMetric">0 m²</div><div class="note">Da rapporto finestrato</div></div>
+                  <div class="metric"><div class="label">Copertura</div><div class="value" id="modelRoofMetric">0 m²</div><div class="note">Stima impronta</div></div>
+                  <div class="metric"><div class="label">Fotovoltaico stimabile</div><div class="value" id="modelPvMetric">0 kW</div><div class="note">Solo potenziale</div></div>
+                  <div class="metric"><div class="label">Affidabilità</div><div class="value" id="modelReadinessMetric">—</div><div class="note">Coerenza della stima</div></div>
+                </div>
+                <div class="model3d-legend" id="modelLegend" style="margin-top:14px"></div>
+                <div class="model3d-note">Se l’anteprima non somiglia all’edificio reale, correggere prima di tutto piani, superficie riscaldata, forma in pianta, rapporto finestre/facciata e altezza interpiano.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-row no-print" style="margin-top:14px">
+            <button class="btn secondary" id="applyEstimatedQuantities">Applica stima geometrica alle quantità</button>
+          </div>
+          <p class="fineprint" style="margin-top:10px">Metodo di pre-assessment: se non ci sono elaborati grafici, la quantità viene stimata da superficie riscaldata, numero di piani, forma, altezza e percentuale finestrata. Nel report e nei tooltip resta chiaro che la stima va sostituita con rilievo, APE, elaborati catastali, computo metrico o preventivi appena disponibili.</p>
+        </div>
+        <div class="grid four" style="margin-bottom:16px">
+          <div class="metric"><div class="label">Interventi selezionati</div><div class="value" id="selectedCount">0</div><div class="note">Numero di righe incluse nel pacchetto</div></div>
+          <div class="metric"><div class="label">Costo lavori lordo</div><div class="value" id="grossWorksMetric">0 €</div><div class="note">Somma delle voci selezionate</div></div>
+          <div class="metric"><div class="label">Risparmio energia stimato</div><div class="value" id="energySavingMetric">0%</div><div class="note">Stima cumulata con cap tecnico</div></div>
+          <div class="metric"><div class="label">Risparmio annuo stimato</div><div class="value" id="annualSavingMetric">0 €</div><div class="note">Sulla spesa energetica attuale</div></div>
+        </div>
+        <div class="button-row no-print" style="margin-bottom:14px">
+          <button class="btn secondary" id="presetLight">Pacchetto leggero</button>
+          <button class="btn secondary" id="presetStandard">Pacchetto standard</button>
+          <button class="btn secondary" id="presetDeep">Deep renovation</button>
+          <button class="btn" id="selectNone">Deseleziona tutto</button>
+          <button class="btn" id="selectAll">Seleziona tutto</button>
+        </div>
+        <div class="table-wrap">
+          <table id="interventionTable">
+            <thead>
+              <tr>
+                <th>Includi</th>
+                <th>Intervento</th>
+                <th>Categoria</th>
+                <th>Quantità</th>
+                <th>Unità</th>
+                <th>Costo unitario</th>
+                <th>Costo lordo</th>
+                <th>Incentivo suggerito</th>
+                <th>Aliquota applicata</th>
+                <th>Risparmio energia</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="fineprint" style="margin-top:12px">I costi sono valori orientativi modificabili. Il bonus viene suggerito automaticamente in base al tipo di intervento e al profilo fiscale, ma per un uso reale vanno verificati normativa vigente, requisiti soggettivi, massimali, prezzari regionali, computi metrici e preventivi. L’app serve come pre-assessment OSS, non come computo estimativo o consulenza fiscale definitiva.</p>
+      </div>
+    </section>
+
+    <section id="bonus" class="tab-panel hidden grid two">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Bonus, incentivi e costo netto</h2>
+            <p>Lo specchio combina gli interventi selezionati con le agevolazioni suggerite automaticamente dall’app. Il facilitatore verifica poi requisiti, massimali, compatibilità e capienza fiscale.</p>
+          </div>
+          <span class="badge primary">BN</span>
+        </div>
+        <div class="grid two">
+          <div class="field"><label>Capienza fiscale annua stimata, €</label><input id="taxCapacity" type="number" value="6000" min="0" /></div>
+          <div class="field"><label>Orizzonte detrazioni, anni</label><input id="deductionYears" type="number" value="10" min="1" max="20" /></div>
+          <div class="field"><label>Spesa mobili/elettrodomestici, €</label><input id="furnitureCost" type="number" value="0" min="0" /></div>
+          <div class="field"><label>Aliquota bonus mobili, %</label><input id="furnitureRate" type="number" value="50" min="0" max="100" /></div>
+        </div>
+        <div class="grid two" style="margin-top:16px">
+          <div class="metric"><div class="label">Detrazioni fiscali stimate</div><div class="value" id="taxDeductionMetric">0 €</div><div class="note">Recupero in rate annuali</div></div>
+          <div class="metric"><div class="label">Incentivi diretti stimati</div><div class="value" id="directIncentiveMetric">0 €</div><div class="note">Per esempio Conto Termico</div></div>
+          <div class="metric"><div class="label">Costo netto orientativo</div><div class="value" id="netCostMetric">0 €</div><div class="note">Lavori meno benefici stimati</div></div>
+          <div class="metric"><div class="label">Rata detrazione annua</div><div class="value" id="annualDeductionMetric">0 €</div><div class="note">Limitata dalla capienza fiscale indicata</div></div>
+        </div>
+        <div class="table-wrap" style="margin-top:16px">
+          <table>
+            <thead><tr><th>Voce</th><th>Base</th><th>Beneficio</th><th>Recupero</th><th>Nota</th></tr></thead>
+            <tbody id="bonusTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Payback e sostenibilità economica</h2>
+            <p>Il rientro è calcolato sul pacchetto selezionato e sulla spesa energetica annua attuale.</p>
+          </div>
+          <span class="badge">PB</span>
+        </div>
+        <div class="grid two">
+          <div class="metric"><div class="label">Payback lordo</div><div class="value" id="paybackGrossMetric">n.d.</div><div class="note">Costo lavori lordo / risparmio annuo</div></div>
+          <div class="metric"><div class="label">Payback con detrazioni annue</div><div class="value" id="paybackCashMetric">n.d.</div><div class="note">Considera risparmio energia + rata detrazione</div></div>
+          <div class="metric"><div class="label">Payback netto a regime</div><div class="value" id="paybackNetMetric">n.d.</div><div class="note">Costo netto / risparmio annuo</div></div>
+          <div class="metric"><div class="label">Riduzione spesa energetica</div><div class="value" id="billReductionMetric">0 €</div><div class="note">Primo anno stimato</div></div>
+        </div>
+        <div class="callout" style="margin-top:16px">
+          <strong>Lettura OSS per l’utente</strong>
+          <p id="paybackExplanation" style="margin:8px 0 0">Seleziona gli interventi per generare una lettura economica.</p>
+        </div>
+        <div class="note-box" style="margin-top:16px">
+          Le aliquote sono parametri modificabili nell’app. Lo sportello deve sempre verificare requisiti soggettivi, massimali, asseverazioni, compatibilità tra incentivi, capienza fiscale e normativa vigente prima di fornire una consulenza definitiva.
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1/-1">
+        <div class="section-title">
+          <div>
+            <h2>Piano finanziario orientativo</h2>
+            <p>Confronta costo netto, risparmio annuo e rata di un eventuale finanziamento. Serve per mostrare se il progetto è sostenibile per la famiglia o il condominio.</p>
+          </div>
+          <span class="badge primary">FI</span>
+        </div>
+        <div class="grid four">
+          <div class="field"><label>Quota da finanziare, % del netto</label><input id="financeShare" type="number" value="80" min="0" max="100" /></div>
+          <div class="field"><label>Tasso annuo prestito, %</label><input id="loanRate" type="number" value="4.5" min="0" step="0.1" /></div>
+          <div class="field"><label>Durata prestito, anni</label><input id="loanYears" type="number" value="10" min="1" max="30" /></div>
+          <div class="field"><label>Schema finanziario</label><select id="financeScheme"><option>Prestito bancario</option><option>Mutuo green</option><option>Finanziamento condominiale</option><option>EPC / ESCo da verificare</option><option>Fondi propri</option></select></div>
+        </div>
+        <div class="grid four" style="margin-top:16px">
+          <div class="metric"><div class="label">Importo finanziato</div><div class="value" id="financedAmountMetric">0 €</div><div class="note">Quota del costo netto</div></div>
+          <div class="metric"><div class="label">Rata mensile stimata</div><div class="value" id="monthlyPaymentMetric">0 €</div><div class="note">Stima alla francese</div></div>
+          <div class="metric"><div class="label">Risparmio mensile energia</div><div class="value" id="monthlySavingMetric">0 €</div><div class="note">Risparmio annuo / 12</div></div>
+          <div class="metric"><div class="label">Gap mensile</div><div class="value" id="monthlyGapMetric">0 €</div><div class="note">Rata meno risparmio energia</div></div>
+        </div>
+        <div class="callout" style="margin-top:16px" id="financeExplanation"></div>
+      </div>
+
+    </section>
+
+    <section id="roadmap" class="tab-panel hidden grid two">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Renovation Roadmap</h2>
+            <p>Output sintetico per proprietari, piccoli condomìni e facilitatori.</p>
+          </div>
+          <span class="badge primary">RR</span>
+        </div>
+        <div class="roadmap-list" id="roadmapList"></div>
+        <div class="button-row no-print" style="margin-top:16px">
+          <button class="btn primary" id="printReport">Stampa o salva PDF</button>
+          <button class="btn secondary" id="copySummary">Copia sintesi</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Suggerimenti sugli interventi</h2>
+            <p>Generati in base alle voci selezionate e alle criticità SCORES.</p>
+          </div>
+          <span class="badge">SG</span>
+        </div>
+        <div id="suggestions" class="grid"></div>
+      </div>
+
+
+      <div class="card" style="grid-column:1/-1">
+        <div class="section-title">
+          <div>
+            <h2>Scheda caso sintetica</h2>
+            <p>Riepilogo operativo per facilitatore e utente: costi, incentivi, livello OSS e prossima azione consigliata.</p>
+          </div>
+          <span class="badge primary">SC</span>
+        </div>
+        <div class="case-sheet-grid">
+          <div class="metric"><div class="label">Costo lordo lavori</div><div class="value" id="sheetGrossMetric">0 €</div><div class="note">Pacchetto selezionato</div></div>
+          <div class="metric"><div class="label">Incentivi stimati</div><div class="value" id="sheetBenefitsMetric">0 €</div><div class="note">Detrazioni + contributi</div></div>
+          <div class="metric"><div class="label">Costo netto</div><div class="value" id="sheetNetMetric">0 €</div><div class="note">Stima orientativa</div></div>
+          <div class="metric"><div class="label">Risparmio annuo</div><div class="value" id="sheetSavingMetric">0 €</div><div class="note">Da consumi energetici</div></div>
+          <div class="metric"><div class="label">Payback netto</div><div class="value" id="sheetPaybackMetric">n.d.</div><div class="note">A regime</div></div>
+          <div class="metric"><div class="label">Livello OSS consigliato</div><div class="value" id="sheetServiceMetric">n.d.</div><div class="note">Secondo readiness</div></div>
+          <div class="metric"><div class="label">Fase del caso</div><div class="value" id="sheetStageMetric">n.d.</div><div class="note">Workflow corrente</div></div>
+          <div class="metric"><div class="label">Prossima azione</div><div class="value" id="sheetNextMetric">n.d.</div><div class="note">Output operativo</div></div>
+        </div>
+        <div class="note-box" style="margin-top:16px" id="caseSheetNarrative"></div>
+        <div class="case-sheet-actions no-print">
+          <button class="btn primary" id="downloadCaseSheet">Scarica scheda caso</button>
+          <button class="btn" id="copyCaseSheet">Copia scheda caso</button>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1/-1">
+        <div class="section-title">
+          <div>
+            <h2>Priorità e sequenza consigliata</h2>
+            <p>Ordina il pacchetto selezionato per evitare lavori scollegati, impianti sovradimensionati e investimenti difficili da deliberare.</p>
+          </div>
+          <span class="badge primary">PR</span>
+        </div>
+        <div id="priorityWarnings" class="grid" style="margin-bottom:14px"></div>
+        <div id="priorityList" class="priority-list"></div>
+      </div>
+    </section>
+
+    <section id="progetti" class="tab-panel hidden grid two">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Monitoraggio progetto in corso</h2>
+            <p>Follow-up operativo per l’OSS: fase, stato lavori, criticità e alert settimanale.</p>
+          </div>
+          <span class="badge primary">AL</span>
+        </div>
+        <div class="grid two">
+          <div class="field"><label>Fase progetto</label><select id="projectStage"><option>Pre-screening</option><option>Roadmap</option><option>Preventivi</option><option>Delibera o decisione</option><option>Contratto</option><option selected>Lavori in corso</option><option>Verifica finale</option></select></div>
+          <div class="field"><label>Avanzamento lavori, %</label><input id="progress" type="number" value="35" min="0" max="100" /></div>
+          <div class="field"><label>Ultimo check</label><input id="lastCheck" type="date" /></div>
+          <div class="field"><label>Rischio operativo</label><select id="risk"><option value="low">Basso</option><option value="medium" selected>Medio</option><option value="high">Alto</option></select></div>
+          <div class="field" style="grid-column:1/-1"><label>Criticità aperte</label><textarea id="issues">Preventivo da riallineare con capitolato, documenti incentivo da completare.</textarea></div>
+        </div>
+        <div class="button-row no-print" style="margin-top:16px">
+          <button class="btn primary" id="saveCase">Salva caso</button>
+          <button class="btn secondary" id="downloadIcs">Scarica promemoria calendario</button>
+          <button class="btn" id="copyAlert">Copia alert settimanale</button>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1/-1">
+        <div class="section-title">
+          <div>
+            <h2>Workflow operativo OSS</h2>
+            <p>Traccia le fasi chiave: dal marketing e primo contatto fino a commissioning, follow-up e dati comunali.</p>
+          </div>
+          <span class="badge primary">WF</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Fase</th><th>Stato</th><th>Responsabile</th><th>Output atteso</th></tr></thead>
+            <tbody id="workflowTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Alert settimanale</h2>
+            <p>Testo generato per facilitatore e utente.</p>
+          </div>
+          <span class="badge">WK</span>
+        </div>
+        <div class="metric"><div class="label">Prossimo check</div><div class="value" id="nextCheckMetric">n.d.</div><div class="note">Sette giorni dopo l’ultimo check</div></div>
+        <div class="note-box" id="alertText" style="margin-top:16px"></div>
+      </div>
+    </section>
+
+    <section id="monitoraggio" class="tab-panel hidden grid two">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Monitoraggio ex-post e risultati garantiti</h2>
+            <p>Confronto tra consumi baseline, target e dati post-intervento. Utile per EPC, verifica qualità e reporting verso il Comune.</p>
+          </div>
+          <span class="badge primary">MP</span>
+        </div>
+        <div class="grid two">
+          <div class="field"><label>Consumo baseline, kWh/anno</label><input id="baselineKwh" type="number" value="220000" min="0" /></div>
+          <div class="field"><label>Consumo misurato post-intervento, kWh/anno</label><input id="postKwh" type="number" value="125000" min="0" /></div>
+          <div class="field"><label>Target risparmio, %</label><input id="targetSaving" type="number" value="45" min="0" max="100" /></div>
+          <div class="field"><label>Fattore emissione, kgCO2/kWh</label><input id="co2Factor" type="number" value="0.20" min="0" step="0.01" /></div>
+          <div class="field"><label>Tipo contratto / garanzia</label><select id="performanceContract"><option>Nessuna garanzia</option><option>EPC da valutare</option><option>EPC con risultati garantiti</option><option>Garanzia prestazionale del contractor</option></select></div>
+          <div class="field"><label>Consenso condivisione dati aggregati</label><select id="dataSharing"><option>Sì, dati aggregati verso Comune</option><option>Solo dati anonimi</option><option>No</option></select></div>
+        </div>
+        <div class="grid four" style="margin-top:16px">
+          <div class="metric"><div class="label">Risparmio misurato</div><div class="value" id="measuredSavingMetric">0%</div><div class="note">Baseline vs post</div></div>
+          <div class="metric"><div class="label">Scostamento dal target</div><div class="value" id="performanceGapMetric">0%</div><div class="note">Risparmio misurato meno target</div></div>
+          <div class="metric"><div class="label">CO2 evitata</div><div class="value" id="co2AvoidedMetric">0 t</div><div class="note">Stima annua</div></div>
+          <div class="metric"><div class="label">Esito qualità</div><div class="value" id="qualityOutcomeMetric">n.d.</div><div class="note">Lettura OSS</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Checklist commissioning e follow-up</h2>
+            <p>Serve a non fermarsi al cantiere: verifica documenti, prestazioni, soddisfazione utente e dati per il PAESC.</p>
+          </div>
+          <span class="badge">FU</span>
+        </div>
+        <div class="grid two">
+          <label class="field"><span class="fineprint"><input id="checkApe" type="checkbox" checked> APE ante/post o documentazione energetica acquisita</span></label>
+          <label class="field"><span class="fineprint"><input id="checkInvoices" type="checkbox" checked> Fatture, asseverazioni e pratica incentivi verificate</span></label>
+          <label class="field"><span class="fineprint"><input id="checkMeters" type="checkbox"> Letture bollette/contatori raccolte dopo almeno 12 mesi</span></label>
+          <label class="field"><span class="fineprint"><input id="checkComfort" type="checkbox"> Questionario comfort e soddisfazione compilato</span></label>
+        </div>
+        <div class="note-box" style="margin-top:16px" id="monitoringSummary"></div>
+      </div>
+    </section>
+
+
+    <section id="modello" class="tab-panel hidden grid two">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Livello di servizio OSS</h2>
+            <p>Seleziona il livello di servizio e confronta tariffa utente, costo interno e fabbisogno di copertura.</p>
+          </div>
+          <span class="badge primary">OS</span>
+        </div>
+        <div class="grid two" id="serviceCards"></div>
+      </div>
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Stima economica OSS + lavori</h2>
+            <p>La stima mostra quanto paga l’utente per il servizio OSS e quanto pesano i lavori selezionati.</p>
+          </div>
+          <span class="badge">EC</span>
+        </div>
+        <div class="grid two">
+          <div class="metric"><div class="label">Tariffa OSS utente</div><div class="value" id="ossFeeMetric">0 €</div><div class="note">In base al livello selezionato</div></div>
+          <div class="metric"><div class="label">Costo interno OSS</div><div class="value" id="ossInternalMetric">0 €</div><div class="note">Ore facilitatore e back-office</div></div>
+          <div class="metric"><div class="label">Gap da coprire</div><div class="value" id="ossGapMetric">0 €</div><div class="note">Da LIFE, Comune, sponsor o modello post-progetto</div></div>
+          <div class="metric"><div class="label">Totale utente lordo</div><div class="value" id="customerTotalMetric">0 €</div><div class="note">Servizio OSS + lavori lordi</div></div>
+        </div>
+        <div class="note-box" style="margin-top:16px">Nel progetto LIFE, le tariffe possono essere ridotte o gratuite nella fase pilota. Nel business model post-LIFE diventano una componente di sostenibilità economica dello sportello.</div>
+      </div>
+      <div class="card" style="grid-column:1/-1">
+        <div class="section-title">
+          <div>
+            <h2>Modello di coordinamento e filiera locale</h2>
+            <p>BORGO OSS resta neutrale: coordina domanda, tecnici, imprese e finanza senza diventare general contractor.</p>
+          </div>
+          <span class="badge primary">CO</span>
+        </div>
+        <div class="grid two">
+          <div class="field"><label>Modello OSS</label><select id="ossModel"><option>Facilitazione</option><option selected>Coordinamento</option><option>Sviluppo / all-inclusive</option></select></div>
+          <div class="field"><label>Policy conflitto di interessi</label><select id="coiPolicy"><option selected>Criteri trasparenti e più preventivi</option><option>Albo qualificato comunale</option><option>Rotazione fornitori</option><option>Da definire</option></select></div>
+        </div>
+        <div class="table-wrap" style="margin-top:16px">
+          <table>
+            <thead><tr><th>Attore</th><th>Ruolo nel servizio</th><th>Stato accordo</th><th>Nota</th></tr></thead>
+            <tbody id="actorsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="dashboard" class="tab-panel hidden">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h2>Dashboard casi salvati</h2>
+            <p>I casi sono salvati localmente nel browser. Puoi esportarli in CSV o JSON.</p>
+          </div>
+          <span class="badge primary">DB</span>
+        </div>
+        <div class="grid four" style="margin-bottom:16px">
+          <div class="metric"><div class="label">Casi salvati</div><div class="value" id="savedCasesMetric">0</div><div class="note">Archivio locale</div></div>
+          <div class="metric"><div class="label">Investimenti aggregati</div><div class="value" id="aggregateInvestmentMetric">0 €</div><div class="note">Lavori lordi salvati</div></div>
+          <div class="metric"><div class="label">Incentivi aggregati</div><div class="value" id="aggregateBenefitsMetric">0 €</div><div class="note">Detrazioni + incentivi diretti</div></div>
+          <div class="metric"><div class="label">CO2 evitata potenziale</div><div class="value" id="aggregateCo2Metric">0 t/anno</div><div class="note">Stima da casi salvati</div></div>
+        </div>
+        <div class="button-row no-print" style="margin-bottom:14px">
+          <button class="btn secondary" id="exportCsv">Esporta CSV</button>
+          <button class="btn secondary" id="exportJson">Esporta JSON</button>
+          <label class="btn">Importa JSON<input id="importJson" type="file" accept="application/json" style="display:none" /></label>
+          <button class="btn accent" id="clearCases">Svuota casi</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Caso</th><th>Comune</th><th>Score</th><th>Lavori</th><th>Incentivi</th><th>Netto</th><th>Payback netto</th><th>Fase</th><th>Prossimo check</th></tr></thead>
+            <tbody id="casesTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const euro = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    const pct = new Intl.NumberFormat('it-IT', { maximumFractionDigits: 1 });
+
+    const serviceLevels = {
+      self: { name: 'Self-service online', fee: 120, internal: 90, hours: 2, description: 'Questionario guidato, pre-score SCORES, indicazioni su bonus e prossimi passi.' },
+      starter: { name: 'Starter', fee: 25, internal: 180, hours: 4, description: 'Incontro con facilitatore, check documentale, lettura del pre-score.' },
+      premium: { name: 'Premium', fee: 300, internal: 720, hours: 14, description: 'SCORES completo, sopralluogo, roadmap, confronto preliminare preventivi.' },
+      full: { name: 'Full', fee: 500, internal: 1600, hours: 32, description: 'Accompagnamento avanzato, supporto contractor, monitoraggio lavori, verifica finale.' }
+    };
+    let selectedService = 'premium';
+
+    const interventions = [
+      { id:'cappotto', selected:true, name:'Isolamento a cappotto pareti esterne', category:'Involucro', qty:900, unit:'m²', unitCost:170, incentive:'ecobonus', rate:50, energy:18, note:'Riduce fabbisogno invernale e migliora comfort.' },
+      { id:'tetto', selected:false, name:'Isolamento copertura o sottotetto', category:'Involucro', qty:450, unit:'m²', unitCost:120, incentive:'ecobonus', rate:50, energy:8, note:'Prioritario se la copertura è disperdente.' },
+      { id:'serramenti', selected:true, name:'Sostituzione serramenti', category:'Serramenti', qty:280, unit:'m²', unitCost:620, incentive:'ecobonus', rate:50, energy:10, note:'Da coordinare con ventilazione e ponti termici.' },
+      { id:'schermature', selected:false, name:'Schermature solari e controllo comfort estivo', category:'Comfort estivo', qty:90, unit:'m²', unitCost:230, incentive:'ecobonus', rate:50, energy:4, note:'Utile per surriscaldamento estivo e raffrescamento.' },
+      { id:'pompa_calore', selected:true, name:'Pompa di calore centralizzata o ibrida', category:'Impianti', qty:1, unit:'lotto', unitCost:95000, incentive:'conto_termico', rate:45, energy:18, note:'Da valutare con terminali, spazi tecnici e potenza elettrica.' },
+      { id:'distribuzione', selected:false, name:'Adeguamento distribuzione e terminali', category:'Impianti', qty:18, unit:'unità', unitCost:2400, incentive:'ecobonus', rate:50, energy:5, note:'Necessario se il salto tecnologico impiantistico è importante.' },
+      { id:'vmc', selected:false, name:'Ventilazione meccanica controllata o deumidificazione', category:'IAQ', qty:18, unit:'unità', unitCost:3200, incentive:'ecobonus', rate:50, energy:3, note:'Riduce muffa e migliora qualità aria indoor.' },
+      { id:'fotovoltaico', selected:true, name:'Impianto fotovoltaico', category:'Rinnovabili', qty:35, unit:'kW', unitCost:1550, incentive:'bonus_casa', rate:50, energy:10, note:'Riduce spesa elettrica e abilita autoconsumo.' },
+      { id:'accumulo', selected:false, name:'Sistema di accumulo', category:'Rinnovabili', qty:40, unit:'kWh', unitCost:850, incentive:'bonus_casa', rate:50, energy:4, note:'Utile se autoconsumo e profili di carico lo giustificano.' },
+      { id:'solare_termico', selected:false, name:'Solare termico per ACS', category:'Rinnovabili', qty:25, unit:'m²', unitCost:950, incentive:'conto_termico', rate:45, energy:5, note:'Interessante per ACS centralizzata o utenze con alto fabbisogno.' },
+      { id:'bacs', selected:false, name:'Regolazione, contabilizzazione e BACS', category:'Controllo', qty:18, unit:'unità', unitCost:650, incentive:'ecobonus', rate:50, energy:4, note:'Intervento leggero con buon rapporto costo/gestione.' },
+      { id:'sismico', selected:false, name:'Verifica e co-benefit strutturale o sismico', category:'Co-benefit', qty:1, unit:'lotto', unitCost:35000, incentive:'sismabonus', rate:50, energy:0, note:'Co-benefit da mantenere secondario rispetto alla call energia.' },
+      { id:'progettazione', selected:true, name:'Progettazione, direzione lavori e pratiche', category:'Tecnico-amministrativo', qty:1, unit:'lotto', unitCost:38000, incentive:'bonus_casa', rate:50, energy:0, note:'Voce necessaria per trasformare la roadmap in progetto cantierabile.' },
+      { id:'imprevisti', selected:true, name:'Imprevisti, sicurezza e coordinamento cantiere', category:'Tecnico-amministrativo', qty:1, unit:'lotto', unitCost:28000, incentive:'bonus_casa', rate:50, energy:0, note:'Margine prudenziale da affinare con computo metrico.' }
+    ];
+
+    const scoreKeys = [
+      ['energyCarbon', 'Energia e carbonio'],
+      ['affordability', 'Affordability'],
+      ['technical', 'Fattibilità tecnica'],
+      ['social', 'Readiness sociale e decisionale'],
+      ['implementation', 'Implementazione e qualità']
+    ];
+
+
+    const workflowSteps = [
+      ['Marketing e primo contatto', 'In corso', 'Comune / OSS', 'Campagna locale, QR code, agenda e scheda richiesta'],
+      ['Pre-assessment SCORES', 'In corso', 'Facilitatore', 'Score, criticità e livello servizio consigliato'],
+      ['Sopralluogo e analisi energia', 'Da pianificare', 'Tecnico', 'Rilievo, bollette, APE, vincoli, prime quantità'],
+      ['Proposta preliminare', 'Da pianificare', 'OSS', 'Pacchetto interventi, costi, bonus, payback'],
+      ['Piano finanziario', 'Da pianificare', 'OSS / banca', 'Rata, incentivi, capienza fiscale, gap mensile'],
+      ['Preventivi e contractor matching', 'Da pianificare', 'OSS', 'Confronto offerte e criteri qualità'],
+      ['Contratto e avvio lavori', 'Da pianificare', 'Utente / impresa', 'Contratto, cronoprogramma, alert settimanali'],
+      ['Commissioning e follow-up', 'Da pianificare', 'OSS', 'Verifica finale, dati post-intervento, report Comune']
+    ];
+
+    const actors = [
+      ['Comune medio', 'Access point locale, fiducia pubblica, comunicazione territoriale', 'Lettera di supporto', 'Ospita desk periodici e promuove il servizio'],
+      ['Società di ingegneria / OSS operator', 'Gestione tecnica, SCORES, roadmap e monitoraggio', 'Applicant / gestore', 'Non agisce come general contractor salvo incarichi separati'],
+      ['Amministratori condominiali', 'Accesso ai condomìni e facilitazione assemblee', 'Da ingaggiare', 'Canale chiave per interventi multi-unità'],
+      ['Tecnici e imprese', 'Preventivi, progettazione, lavori, qualità esecutiva', 'Albo qualificato', 'Criteri trasparenti e più offerte comparabili'],
+      ['Banca / finanziaria', 'Orientamento su prestiti, mutui green, finanziamento condominiale', 'Lettera di supporto', 'Nessun obbligo automatico di concessione credito'],
+      ['Associazione consumatori', 'Trasparenza, reclami, linguaggio chiaro, tutela utente', 'Lettera di supporto', 'Riduce rischio conflitto di interessi']
+    ];
+
+    function get(id) { return document.getElementById(id); }
+    function n(id) { return Number(get(id).value || 0); }
+    function s(id) { return get(id).value; }
+    function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+    function yearsText(value) { return Number.isFinite(value) && value > 0 ? pct.format(value) + ' anni' : 'n.d.'; }
+    function todayISO() { return new Date().toISOString().slice(0,10); }
+    function addDays(dateString, days) { const d = dateString ? new Date(dateString + 'T12:00:00') : new Date(); d.setDate(d.getDate() + days); return d.toISOString().slice(0,10); }
+
+    function incentiveLabel(type) {
+      const labels = {
+        bonus_casa: 'Bonus casa',
+        ecobonus: 'Ecobonus',
+        conto_termico: 'Conto Termico',
+        sismabonus: 'Sismabonus / co-benefit',
+        bonus_mobili: 'Bonus mobili',
+        nessuno: 'Da verificare'
+      };
+      return labels[type] || 'Da verificare';
+    }
+
+    function recommendedIncentive(item) {
+      const profile = s('fiscalProfile');
+      const detractionRate = profile === 'main' ? 50 : 36;
+      const mixedNote = profile === 'mixed' ? ' Situazione fiscale mista: usare aliquota prudenziale e verificare per singola unità.' : '';
+
+      if (['pompa_calore','solare_termico'].includes(item.id)) {
+        return {
+          type: 'conto_termico',
+          rate: 45,
+          reason: 'Suggerito perché l’intervento riguarda impianti termici o rinnovabili termiche. Incentivo diretto da verificare su requisiti GSE e compatibilità.' + mixedNote
+        };
+      }
+
+      if (['cappotto','tetto','serramenti','schermature','distribuzione','vmc','bacs'].includes(item.id)) {
+        return {
+          type: 'ecobonus',
+          rate: detractionRate,
+          reason: 'Suggerito perché l’intervento migliora prestazione energetica, involucro, impianti o regolazione. Verificare requisiti tecnici, massimali e asseverazioni.' + mixedNote
+        };
+      }
+
+      if (['fotovoltaico','accumulo','progettazione','imprevisti'].includes(item.id)) {
+        return {
+          type: 'bonus_casa',
+          rate: detractionRate,
+          reason: 'Suggerito come detrazione edilizia ordinaria collegata al pacchetto lavori. Verificare titolo edilizio, pagamenti, massimali e condizioni specifiche.' + mixedNote
+        };
+      }
+
+      if (item.id === 'sismico') {
+        return {
+          type: 'sismabonus',
+          rate: detractionRate,
+          reason: 'Suggerito solo come co-benefit strutturale. Da verificare con tecnico abilitato, classe di rischio, procedure e normativa vigente.' + mixedNote
+        };
+      }
+
+      return { type: 'nessuno', rate: 0, reason: 'Nessuna agevolazione suggerita automaticamente. Serve verifica tecnica e fiscale.' };
+    }
+
+    function updateRatesByProfile() {
+      interventions.forEach(item => {
+        const rec = recommendedIncentive(item);
+        item.incentive = rec.type;
+        item.rate = rec.rate;
+        item.incentiveReason = rec.reason;
+      });
+    }
+
+    function calculateScores() {
+      const year = n('year');
+      const classMap = { G:100, F:92, E:76, D:58, C:42, B:28, A:15 };
+      const ageFactor = year <= 1980 ? 100 : year <= 1995 ? 78 : year <= 2010 ? 55 : 32;
+      const energyFactor = classMap[s('energyClass')] || 60;
+      const selected = interventions.filter(i => i.selected);
+      const selectedEnergy = selected.reduce((a,b) => a + (b.energy || 0), 0);
+      const selectedCount = selected.length;
+      const energyCarbon = clamp(Math.round(ageFactor * .25 + energyFactor * .35 + n('billConcern') * 8 + Math.min(selectedEnergy, 65) * .35), 0, 100);
+      const affordability = clamp(Math.round(70 - n('budgetStress') * 9 + n('financeAccess') * 7 + (n('vulnerable') ? 7 : 0)), 0, 100);
+      const technical = clamp(Math.round(42 + n('technicalEase') * 10 + n('documents') * 5 - n('constraints') * 9 + selectedCount * 1.3), 0, 100);
+      const social = clamp(Math.round(25 + n('ownerAgreement') * 12 + n('decisionStage') * 8 + (n('vulnerable') ? 4 : 0)), 0, 100);
+      const implementation = clamp(Math.round(30 + n('documents') * 8 + n('urgency') * 8 + selectedCount * 1.8), 0, 100);
+      const weights = { energyCarbon:3, affordability:3, technical:2, social:2, implementation:2 };
+      const discrete = value => value >= 75 ? 4 : value >= 55 ? 3 : value >= 35 ? 2 : 1;
+      const dims = { energyCarbon, affordability, technical, social, implementation };
+      let num = 0, den = 0;
+      Object.keys(dims).forEach(k => { num += discrete(dims[k]) * weights[k]; den += 4 * weights[k]; });
+      const total = Math.round(num / den * 100);
+      return { dims, total };
+    }
+
+    function selectedInterventions() { return interventions.filter(i => i.selected); }
+    function interventionCost(item) { return Number(item.qty || 0) * Number(item.unitCost || 0); }
+    function worksGross() { return selectedInterventions().reduce((sum, item) => sum + interventionCost(item), 0); }
+    function energySavingPercent() {
+      const total = selectedInterventions().reduce((sum, item) => sum + Number(item.energy || 0), 0);
+      const scenarioCap = s('renovationScenario') === 'deep' ? 70 : s('renovationScenario') === 'standard' ? 55 : 35;
+      return clamp(total, 0, scenarioCap);
+    }
+
+    function incentiveTotals() {
+      const groups = {};
+      let tax = 0;
+      let direct = 0;
+      selectedInterventions().forEach(item => {
+        const base = interventionCost(item);
+        const benefit = base * Number(item.rate || 0) / 100;
+        const key = item.incentive || 'nessuno';
+        if (!groups[key]) groups[key] = { base:0, benefit:0, type:key };
+        groups[key].base += base;
+        groups[key].benefit += benefit;
+        if (key === 'conto_termico') direct += benefit;
+        else if (key !== 'nessuno') tax += benefit;
+      });
+      const furnitureBase = Math.min(n('furnitureCost'), 5000);
+      const furnitureBenefit = furnitureBase * n('furnitureRate') / 100;
+      if (furnitureBenefit > 0) {
+        groups['bonus_mobili'] = { base: furnitureBase, benefit: furnitureBenefit, type: 'bonus_mobili' };
+        tax += furnitureBenefit;
+      }
+      return { groups, tax, direct, total: tax + direct };
+    }
+
+    function annualSaving() { return n('annualBill') * energySavingPercent() / 100; }
+    function paybackData() {
+      const gross = worksGross();
+      const inc = incentiveTotals();
+      const net = Math.max(0, gross - inc.total);
+      const saving = annualSaving();
+      const deductionYears = Math.max(1, n('deductionYears'));
+      const annualDeductionPotential = inc.tax / deductionYears;
+      const annualDeduction = Math.min(annualDeductionPotential, n('taxCapacity'));
+      return {
+        gross,
+        net,
+        tax: inc.tax,
+        direct: inc.direct,
+        totalBenefit: inc.total,
+        annualDeduction,
+        saving,
+        grossPayback: saving > 0 ? gross / saving : Infinity,
+        cashPayback: (saving + annualDeduction) > 0 ? gross / (saving + annualDeduction) : Infinity,
+        netPayback: saving > 0 ? net / saving : Infinity
+      };
+    }
+
+    function recommendation() {
+      const score = calculateScores().total;
+      if (score >= 75) return { service:'full', badge:'Alta readiness', text:'Caso pronto per accompagnamento avanzato: preventivi, contratti, lavori e verifica qualità.' };
+      if (score >= 55) return { service:'premium', badge:'Potenziale medio-alto', text:'Caso con buon potenziale: servono sopralluogo, roadmap e strutturazione finanziaria.' };
+      if (score >= 35) return { service:'starter', badge:'Da preparare', text:'Caso da preparare: raccogliere dati, chiarire obiettivi e verificare capacità decisionale.' };
+      return { service:'self', badge:'Primo orientamento', text:'Caso iniziale: partire da self-service e primo check documentale.' };
+    }
+
+
+    function safeSet(id, value) { const el = get(id); if (el) el.textContent = value; }
+    function safeHtml(id, value) { const el = get(id); if (el) el.innerHTML = value; }
+
+    function bookingText() {
+      const name = `${s('firstName')} ${s('lastName')}`.trim() || 'utente BORGO OSS';
+      const date = s('appointmentDate') || addDays(todayISO(), 7);
+      return `BORGO OSS - conferma appuntamento\nGentile ${name},\nconfermiamo l'appuntamento per il caso "${s('caseName')}" nel Comune di ${s('town')}.\nData: ${date}\nOra: ${s('appointmentTime')}\nDurata: ${n('appointmentDuration')} minuti\nModalità: ${s('appointmentMode')}\nOggetto: ${s('requestSubject')}\n\nPrima dell'incontro, se disponibili, preparare: APE, ultime bollette, planimetria, informazioni sull'impianto, eventuali preventivi e verbali condominiali.\nPer spostare o cancellare l'appuntamento contattare lo sportello BORGO OSS.`;
+    }
+
+    function renderEngagement() {
+      const capacity = n('weeklySlots') * n('serviceWeeks');
+      const eventContacts = n('publicEvents') * n('contactsPerEvent');
+      const assessments = Math.round((capacity + eventContacts) * n('conversionAssessment') / 100);
+      const projects = Math.round(assessments * n('conversionProject') / 100);
+      safeSet('annualCapacityMetric', capacity);
+      safeSet('eventContactsMetric', eventContacts);
+      safeSet('expectedAssessmentsMetric', assessments);
+      safeSet('expectedProjectsMetric', projects);
+    }
+
+    function monthlyPayment(principal, annualRate, years) {
+      const months = Math.max(1, Math.round(years * 12));
+      const r = annualRate / 100 / 12;
+      if (principal <= 0) return 0;
+      if (r === 0) return principal / months;
+      return principal * r / (1 - Math.pow(1 + r, -months));
+    }
+
+    function renderFinance() {
+      const data = paybackData();
+      const financed = data.net * n('financeShare') / 100;
+      const monthly = monthlyPayment(financed, n('loanRate'), n('loanYears'));
+      const monthlySaving = data.saving / 12;
+      const gap = monthly - monthlySaving;
+      safeSet('financedAmountMetric', euro.format(financed));
+      safeSet('monthlyPaymentMetric', euro.format(monthly));
+      safeSet('monthlySavingMetric', euro.format(monthlySaving));
+      safeSet('monthlyGapMetric', euro.format(gap));
+      const msg = gap <= 0
+        ? `Il risparmio energetico mensile stimato copre interamente la rata del finanziamento. Schema selezionato: ${s('financeScheme')}. La verifica reale richiede comunque istruttoria bancaria, capienza fiscale e requisiti degli incentivi.`
+        : `Il risparmio energetico mensile non copre completamente la rata: resta un gap indicativo di ${euro.format(gap)} al mese. BORGO OSS dovrebbe valutare riduzione del pacchetto, durata maggiore, incentivo diretto, mutuo green o supporto specifico per utenti vulnerabili.`;
+      safeHtml('financeExplanation', `<strong>Lettura finanziaria OSS</strong><p style="margin:8px 0 0">${msg}</p>`);
+    }
+
+    function renderWorkflow() {
+      safeHtml('workflowTable', workflowSteps.map((r, idx) => `<tr><td><strong>${idx+1}. ${r[0]}</strong></td><td><span class="badge ${r[1] === 'In corso' ? 'warn' : ''}">${r[1]}</span></td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join(''));
+    }
+
+    function monitoringData() {
+      const baseline = n('baselineKwh');
+      const post = n('postKwh');
+      const measured = baseline > 0 ? clamp((baseline - post) / baseline * 100, -100, 100) : 0;
+      const gap = measured - n('targetSaving');
+      const co2 = Math.max(0, (baseline - post) * n('co2Factor') / 1000);
+      return { baseline, post, measured, gap, co2 };
+    }
+
+    function renderMonitoring() {
+      const m = monitoringData();
+      safeSet('measuredSavingMetric', pct.format(m.measured) + '%');
+      safeSet('performanceGapMetric', pct.format(m.gap) + '%');
+      safeSet('co2AvoidedMetric', pct.format(m.co2) + ' t');
+      safeSet('qualityOutcomeMetric', m.gap >= 0 ? 'Target raggiunto' : (m.gap > -10 ? 'Scostamento moderato' : 'Criticità'));
+      const checks = ['checkApe','checkInvoices','checkMeters','checkComfort'].filter(id => get(id) && get(id).checked).length;
+      safeHtml('monitoringSummary', `<strong>Follow-up completato: ${checks}/4 elementi</strong><br>Contratto/garanzia: ${s('performanceContract')}. Condivisione dati: ${s('dataSharing')}. Il dato aggregato può alimentare il monitoraggio comunale dei risultati sul patrimonio residenziale privato.`);
+    }
+
+    function renderActors() {
+      safeHtml('actorsTable', actors.map(r => `<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join(''));
+    }
+
+    function renderDashboardAggregates() {
+      const cases = loadCases();
+      const invest = cases.reduce((a,c)=>a+Number(c.grossWorks||0),0);
+      const benefits = cases.reduce((a,c)=>a+Number(c.benefits||0),0);
+      const co2 = cases.reduce((a,c)=>a+Number(c.co2Avoided||0),0);
+      safeSet('savedCasesMetric', cases.length);
+      safeSet('aggregateInvestmentMetric', euro.format(invest));
+      safeSet('aggregateBenefitsMetric', euro.format(benefits));
+      safeSet('aggregateCo2Metric', pct.format(co2) + ' t/anno');
+    }
+
+    function renderScores() {
+      const { dims, total } = calculateScores();
+      const rec = recommendation();
+      get('totalScore').textContent = total;
+      get('scoreDescription').textContent = rec.text;
+      const badge = get('scoreBadge');
+      badge.textContent = rec.badge;
+      badge.className = 'badge ' + (total >= 75 ? 'good' : total >= 55 ? 'warn' : 'bad');
+      get('scoreBars').innerHTML = scoreKeys.map(([k,label]) => `
+        <div>
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+            <strong>${label}</strong><span class="badge">${dims[k]}/100</span>
+          </div>
+          <div class="bar"><span style="width:${dims[k]}%"></span></div>
+        </div>`).join('');
+    }
+
+
+    function readinessClass(value) {
+      if (value >= 75) return 4;
+      if (value >= 55) return 3;
+      if (value >= 35) return 2;
+      return 1;
+    }
+
+    function renderReadinessExplanation() {
+      const el = get('readinessBreakdown');
+      if (!el) return;
+      const { dims, total } = calculateScores();
+      const weights = { energyCarbon:3, affordability:3, technical:2, social:2, implementation:2 };
+      const labels = {
+        energyCarbon: 'Energia e carbonio',
+        affordability: 'Affordability',
+        technical: 'Fattibilità tecnica',
+        social: 'Readiness sociale e decisionale',
+        implementation: 'Implementazione e qualità'
+      };
+      const inputHints = {
+        energyCarbon: 'anno, classe energetica, criticità bollette, risparmio degli interventi selezionati',
+        affordability: 'stress di budget, accesso a incentivi/finanza, vulnerabilità',
+        technical: 'fattibilità percepita, documenti disponibili, vincoli, numero interventi',
+        social: 'accordo tra proprietari, fase decisionale, vulnerabilità',
+        implementation: 'documenti disponibili, urgenza, numero interventi selezionati'
+      };
+      const rows = Object.keys(dims).map(k => {
+        const cls = readinessClass(dims[k]);
+        return `<div class="readiness-row"><strong>${labels[k]}</strong><span>${dims[k]}/100</span><span>classe ${cls}/4</span><span>peso ${weights[k]}</span><div class="fineprint" style="grid-column:1/-1">Input principali: ${inputHints[k]}.</div></div>`;
+      }).join('');
+      el.innerHTML = `
+        <div class="readiness-row header"><span>Dimensione</span><span>Valore</span><span>Classe</span><span>Peso</span></div>
+        ${rows}
+        <div class="readiness-note"><strong>Risultato finale: ${total}/100.</strong> Le dimensioni con peso 3 incidono di più perché per l’OSS sono decisive: potenziale energia/carbonio e sostenibilità economica. La readiness sociale pesa perché un edificio tecnicamente conveniente può comunque non partire se il condominio non è pronto o mancano documenti, consenso e capacità finanziaria.</div>`;
+    }
+
+    function renderInterventions() {
+      const tbody = document.querySelector('#interventionTable tbody');
+      tbody.innerHTML = interventions.map((item, index) => `
+        <tr>
+          <td><input class="check int-selected" data-index="${index}" type="checkbox" ${item.selected ? 'checked' : ''}></td>
+          <td class="intervention-name"><strong>${item.name}</strong><div class="fineprint">${item.note}</div></td>
+          <td>${item.category}</td>
+          <td><input class="mini-input int-qty" data-index="${index}" type="number" value="${item.qty}" min="0" step="1"></td>
+          <td>${item.unit}</td>
+          <td><input class="mini-input int-cost" data-index="${index}" type="number" value="${item.unitCost}" min="0" step="10"></td>
+          <td><strong>${euro.format(interventionCost(item))}</strong></td>
+          <td>
+            <span class="incentive-chip">${incentiveLabel(item.incentive)}</span>
+            <div class="fineprint">${item.incentiveReason || recommendedIncentive(item).reason}</div>
+          </td>
+          <td><strong>${item.rate}%</strong><div class="fineprint">Auto da profilo fiscale</div></td>
+          <td><input class="mini-input int-energy" data-index="${index}" type="number" value="${item.energy}" min="0" max="80" step="1">%</td>
+        </tr>
+      `).join('');
+
+      document.querySelectorAll('.int-selected').forEach(el => el.addEventListener('change', e => { interventions[e.target.dataset.index].selected = e.target.checked; updateAll(false); }));
+      document.querySelectorAll('.int-qty').forEach(el => el.addEventListener('input', e => { interventions[e.target.dataset.index].qty = Number(e.target.value); updateAll(false); }));
+      document.querySelectorAll('.int-cost').forEach(el => el.addEventListener('input', e => { interventions[e.target.dataset.index].unitCost = Number(e.target.value); updateAll(false); }));
+      document.querySelectorAll('.int-energy').forEach(el => el.addEventListener('input', e => { interventions[e.target.dataset.index].energy = Number(e.target.value); updateAll(false); }));
+    }
+
+    function renderCostMetrics() {
+      const selected = selectedInterventions();
+      get('selectedCount').textContent = selected.length;
+      get('grossWorksMetric').textContent = euro.format(worksGross());
+      get('energySavingMetric').textContent = pct.format(energySavingPercent()) + '%';
+      get('annualSavingMetric').textContent = euro.format(annualSaving());
+      const data = paybackData();
+      get('taxDeductionMetric').textContent = euro.format(data.tax);
+      get('directIncentiveMetric').textContent = euro.format(data.direct);
+      get('netCostMetric').textContent = euro.format(data.net);
+      get('annualDeductionMetric').textContent = euro.format(data.annualDeduction);
+      get('paybackGrossMetric').textContent = yearsText(data.grossPayback);
+      get('paybackCashMetric').textContent = yearsText(data.cashPayback);
+      get('paybackNetMetric').textContent = yearsText(data.netPayback);
+      get('billReductionMetric').textContent = euro.format(data.saving);
+      get('paybackExplanation').textContent = paybackExplanation(data);
+      get('ossFeeMetric').textContent = euro.format(serviceLevels[selectedService].fee);
+      get('ossInternalMetric').textContent = euro.format(serviceLevels[selectedService].internal);
+      get('ossGapMetric').textContent = euro.format(Math.max(0, serviceLevels[selectedService].internal - serviceLevels[selectedService].fee));
+      get('customerTotalMetric').textContent = euro.format(worksGross() + serviceLevels[selectedService].fee);
+    }
+
+    function paybackExplanation(data) {
+      if (!Number.isFinite(data.netPayback)) return 'Non è possibile calcolare il payback: inserire una spesa energetica annua e almeno un intervento con risparmio stimato.';
+      if (data.netPayback <= 8) return 'Il pacchetto selezionato ha un rientro economico potenzialmente interessante. L’OSS può portarlo verso la fase preventivi e verifica finanziaria.';
+      if (data.netPayback <= 15) return 'Il pacchetto ha un rientro medio: conviene verificare priorità, incentivi, rateizzazione e possibilità di procedere per fasi.';
+      return 'Il payback è lungo: l’OSS dovrebbe valutare un pacchetto più graduale, migliorare l’accesso agli incentivi o valorizzare co-benefit come comfort, salubrità e valore immobiliare.';
+    }
+
+    function renderBonusTable() {
+      const inc = incentiveTotals();
+      const names = {
+        bonus_casa: 'Bonus casa / ristrutturazioni',
+        ecobonus: 'Ecobonus',
+        conto_termico: 'Conto Termico',
+        sismabonus: 'Sismabonus / co-benefit strutturale',
+        bonus_mobili: 'Bonus mobili',
+        nessuno: 'Nessun incentivo impostato'
+      };
+      const rows = Object.values(inc.groups).map(g => {
+        const recovery = g.type === 'conto_termico' ? 'Incentivo diretto, tempi da verificare' : (g.type === 'nessuno' ? 'Nessuno' : `${n('deductionYears')} anni`);
+        const note = g.type === 'conto_termico' ? 'Da verificare con requisiti GSE e compatibilità.' : g.type === 'nessuno' ? 'Voce prudenziale non agevolata.' : 'Detrazione fiscale, subordinata a requisiti e capienza.';
+        return `<tr><td><strong>${names[g.type] || g.type}</strong></td><td>${euro.format(g.base)}</td><td>${euro.format(g.benefit)}</td><td>${recovery}</td><td>${note}</td></tr>`;
+      }).join('');
+      get('bonusTable').innerHTML = rows || '<tr><td colspan="5">Seleziona almeno un intervento per generare lo specchio bonus.</td></tr>';
+    }
+
+    function renderRoadmap() {
+      const rec = recommendation();
+      const data = paybackData();
+      const selectedNames = selectedInterventions().map(i => i.name).slice(0, 5).join(', ');
+      const steps = [
+        ['Profilazione', `Caso: ${s('caseName')} in ${s('town')}. Score SCORES: ${calculateScores().total}/100. Livello consigliato: ${serviceLevels[rec.service].name}.`],
+        ['Pacchetto interventi', selectedNames ? `Interventi selezionati: ${selectedNames}${selectedInterventions().length > 5 ? ', altri interventi selezionati.' : '.'}` : 'Nessun intervento selezionato: partire da raccolta dati e pre-assessment.'],
+        ['Stima economica', `Costo lavori lordo: ${euro.format(data.gross)}. Benefici stimati: ${euro.format(data.totalBenefit)}. Costo netto orientativo: ${euro.format(data.net)}.`],
+        ['Payback', `Payback lordo: ${yearsText(data.grossPayback)}. Payback netto a regime: ${yearsText(data.netPayback)}. Risparmio annuo stimato: ${euro.format(data.saving)}.`],
+        ['Prossimo passo OSS', nextStepText(rec.service)]
+      ];
+      get('roadmapList').innerHTML = steps.map((step, idx) => `<div class="roadmap-item"><div class="step">${idx+1}</div><div><h4>${step[0]}</h4><p>${step[1]}</p></div></div>`).join('');
+      renderSuggestions();
+    }
+
+    function nextStepText(service) {
+      if (service === 'full') return 'Avviare supporto avanzato: confronto preventivi, verifica contratti, monitoraggio lavori e controllo qualità.';
+      if (service === 'premium') return 'Programmare sopralluogo e trasformare la stima in una roadmap tecnica con scenario minimo, standard e deep.';
+      if (service === 'starter') return 'Organizzare un incontro di orientamento per completare documenti, obiettivi e fattibilità.';
+      return 'Inviare guida self-service e questionario iniziale, poi rivalutare il caso con il facilitatore.';
+    }
+
+    function renderSuggestions() {
+      const list = [];
+      const ids = new Set(selectedInterventions().map(i => i.id));
+      if (ids.has('cappotto') && !ids.has('serramenti')) list.push(['Coerenza involucro', 'Se si prevede cappotto, valutare anche serramenti e ponti termici per evitare interventi parziali.']);
+      if (ids.has('serramenti') && !ids.has('vmc')) list.push(['Qualità aria interna', 'Con serramenti più performanti può essere utile valutare VMC o strategia di ventilazione per ridurre muffa e umidità.']);
+      if (ids.has('pompa_calore') && !ids.has('fotovoltaico')) list.push(['Elettrificazione', 'La pompa di calore è più sostenibile economicamente se coordinata con FV, autoconsumo o comunità energetica.']);
+      if (n('budgetStress') >= 4) list.push(['Affordability first', 'Budget critico: proporre scenario per fasi, priorità sugli interventi con migliore rapporto risparmio/costo e verifica finanziaria.']);
+      if (n('ownerAgreement') <= 2 && s('buildingType').toLowerCase().includes('condominio')) list.push(['Facilitazione condominiale', 'Readiness decisionale bassa: preparare scheda assemblea con costi, incentivi, payback e rischi del non intervento.']);
+      if (!list.length) list.push(['Pacchetto coerente', 'Gli interventi selezionati sono coerenti con una roadmap integrata. Procedere con verifica tecnica e preventivi.']);
+      get('suggestions').innerHTML = list.map(item => `<div class="callout"><strong>${item[0]}</strong><p style="margin:8px 0 0">${item[1]}</p></div>`).join('');
+    }
+
+
+
+
+    function renderCaseSheet() {
+      const data = paybackData();
+      const rec = recommendation();
+      const next = nextStepText(rec.service);
+      safeSet('sheetGrossMetric', euro.format(data.gross));
+      safeSet('sheetBenefitsMetric', euro.format(data.totalBenefit));
+      safeSet('sheetNetMetric', euro.format(data.net));
+      safeSet('sheetSavingMetric', euro.format(data.saving));
+      safeSet('sheetPaybackMetric', yearsText(data.netPayback));
+      safeSet('sheetServiceMetric', serviceLevels[rec.service].name);
+      safeSet('sheetStageMetric', s('projectStage'));
+      safeSet('sheetNextMetric', shortNextStep(next));
+      const selected = selectedInterventions().map(i => i.name).slice(0,6).join(', ');
+      safeHtml('caseSheetNarrative', `<strong>${s('caseName') || 'Caso senza nome'}</strong> · ${s('town') || 'Comune non indicato'}<br>Edificio: ${s('buildingType')} · Score SCORES: ${calculateScores().total}/100 · Livello attualmente selezionato: ${serviceLevels[selectedService].name}.<br>Interventi inclusi: ${selected || 'nessuno'}${selectedInterventions().length > 6 ? ', altri interventi selezionati' : ''}.<br><strong>Prossimo passo consigliato:</strong> ${next}`);
+    }
+
+    function shortNextStep(text) {
+      if (text.length <= 42) return text;
+      const match = text.split(':')[0];
+      return match || text.slice(0,42) + '…';
+    }
+
+    function caseSheetText() {
+      const data = paybackData();
+      const rec = recommendation();
+      return `BORGO OSS - Scheda caso
+
+Caso: ${s('caseName') || 'Caso senza nome'}
+Comune: ${s('town') || '-'}
+Tipologia: ${s('buildingType')}
+Score SCORES: ${calculateScores().total}/100
+Livello OSS selezionato: ${serviceLevels[selectedService].name}
+Livello OSS consigliato: ${serviceLevels[rec.service].name}
+Fase corrente: ${s('projectStage')}
+
+Interventi selezionati:
+- ${selectedInterventions().map(i => i.name).join('\n- ')}
+
+Costo lordo lavori: ${euro.format(data.gross)}
+Incentivi stimati: ${euro.format(data.totalBenefit)}
+Costo netto orientativo: ${euro.format(data.net)}
+Risparmio annuo stimato: ${euro.format(data.saving)}
+Payback netto: ${yearsText(data.netPayback)}
+Schema finanziario: ${s('financeScheme')}
+
+Prossima azione consigliata:
+${nextStepText(rec.service)}
+
+Nota: scheda generata da BORGO OSS per uso operativo del facilitatore.`;
+    }
+
+    function priorityPhase(item) {
+      const map = {
+        sismico: 0,
+        progettazione: 0,
+        cappotto: 1,
+        tetto: 1,
+        serramenti: 1,
+        schermature: 1,
+        vmc: 2,
+        distribuzione: 2,
+        pompa_calore: 3,
+        solare_termico: 3,
+        bacs: 3,
+        fotovoltaico: 4,
+        accumulo: 4,
+        imprevisti: 5
+      };
+      return map[item.id] ?? 9;
+    }
+
+    function priorityPhaseTitle(phase) {
+      const titles = {
+        0: 'Fase 0 · Verifiche e progettazione prima del cantiere',
+        1: 'Fase 1 · Riduzione del fabbisogno: involucro e comfort passivo',
+        2: 'Fase 2 · Qualità interna e predisposizioni',
+        3: 'Fase 3 · Impianti, regolazione e produzione termica',
+        4: 'Fase 4 · Rinnovabili elettriche e accumulo',
+        5: 'Fase 5 · Cantiere, imprevisti e controllo finale'
+      };
+      return titles[phase] || 'Fase successiva';
+    }
+
+    function priorityReason(item) {
+      const reasons = {
+        sismico: 'Da verificare prima di cappotto, facciata e cantieri invasivi, perché può condizionare dettagli, costi e autorizzazioni.',
+        progettazione: 'Serve all’inizio per trasformare la stima in progetto, verificare requisiti, titoli edilizi, massimali e capitolato.',
+        cappotto: 'Conviene prima degli impianti perché riduce il fabbisogno e permette di dimensionare meglio il nuovo sistema.',
+        tetto: 'Da coordinare con cappotto, ponti termici e fotovoltaico: meglio decidere prima di installare moduli o impianti in copertura.',
+        serramenti: 'Da coordinare con cappotto, soglie, cassonetti, ventilazione e ponti termici; non va trattato come sostituzione isolata.',
+        schermature: 'Da decidere insieme a serramenti e comfort estivo, soprattutto per esposizioni sud e ovest.',
+        vmc: 'Da valutare dopo o insieme a cappotto e serramenti, perché aumenta la tenuta dell’involucro e può emergere rischio muffa/umidità.',
+        distribuzione: 'Prima della scelta finale dell’impianto va verificata la compatibilità con terminali, temperature di esercizio e spazi tecnici.',
+        pompa_calore: 'Da dimensionare dopo involucro e distribuzione, altrimenti il rischio è scegliere una macchina sovradimensionata o poco efficiente.',
+        solare_termico: 'Da valutare dopo aver chiarito fabbisogno ACS, schema impiantistico e copertura disponibile.',
+        bacs: 'Può essere quick win, ma dà il massimo se integrato con impianto, contabilizzazione e monitoraggio.',
+        fotovoltaico: 'Da dimensionare dopo i nuovi carichi elettrici, specialmente se si installa pompa di calore.',
+        accumulo: 'Da valutare dopo FV e profilo di autoconsumo; non conviene dimensionarlo prima di sapere produzione e consumi post-intervento.',
+        imprevisti: 'Voce prudenziale da mantenere nel budget e aggiornare quando arrivano computo, offerte e cronoprogramma.'
+      };
+      return reasons[item.id] || 'Da valutare nella roadmap in base a costi, vincoli e priorità dell’utente.';
+    }
+
+    function dependencyWarnings() {
+      const ids = new Set(selectedInterventions().map(i => i.id));
+      const warnings = [];
+      const envelope = ids.has('cappotto') || ids.has('tetto') || ids.has('serramenti');
+      if (ids.has('pompa_calore') && !envelope) warnings.push(['Impianto prima dell’involucro', 'Hai selezionato la pompa di calore senza interventi sull’involucro. Prima di dimensionarla conviene verificare dispersioni, terminali e possibilità di ridurre il fabbisogno.']);
+      if (ids.has('cappotto') && !ids.has('serramenti')) warnings.push(['Cappotto senza serramenti', 'Il cappotto può funzionare anche da solo, ma conviene verificare serramenti, cassonetti e ponti termici per evitare risultati parziali.']);
+      if (ids.has('serramenti') && !ids.has('vmc')) warnings.push(['Serramenti e qualità dell’aria', 'Serramenti molto performanti possono ridurre il ricambio d’aria. Valutare VMC, deumidificazione o strategia di ventilazione.']);
+      if (ids.has('fotovoltaico') && !ids.has('pompa_calore')) warnings.push(['FV da dimensionare sui carichi futuri', 'Il fotovoltaico è utile, ma conviene dimensionarlo considerando eventuali futuri carichi elettrici come pompa di calore, accumulo o ricarica.']);
+      if (ids.has('accumulo') && !ids.has('fotovoltaico')) warnings.push(['Accumulo senza FV', 'L’accumulo va valutato solo se c’è produzione FV o una strategia chiara di autoconsumo.']);
+      if (n('budgetStress') >= 4) warnings.push(['Budget critico', 'Conviene proporre una sequenza per fasi: prima misure ad alto rapporto beneficio/costo, poi interventi più invasivi.']);
+      if (n('ownerAgreement') <= 2 && s('buildingType').toLowerCase().includes('condominio')) warnings.push(['Decisione condominiale fragile', 'Prima dei preventivi complessi serve una scheda assembleare con scenari, costi, bonus, payback e rischi del non intervento.']);
+      return warnings;
+    }
+
+    function renderPriorityPlan() {
+      if (!get('priorityList')) return;
+      const selected = selectedInterventions().slice().sort((a,b) => priorityPhase(a) - priorityPhase(b));
+      if (!selected.length) {
+        get('priorityList').innerHTML = '<div class="note-box">Nessun intervento selezionato. Prima seleziona un pacchetto o alcune voci nella sezione “Interventi e costi”.</div>';
+      } else {
+        get('priorityList').innerHTML = selected.map((item, idx) => `
+          <div class="priority-card">
+            <div class="priority-rank">${idx + 1}</div>
+            <div>
+              <h4>${item.name}</h4>
+              <div class="priority-meta"><span>${priorityPhaseTitle(priorityPhase(item))}</span><span>${item.category}</span><span>${incentiveLabel(item.incentive)}</span><span>${euro.format(interventionCost(item))}</span></div>
+              <p>${priorityReason(item)}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+      const warnings = dependencyWarnings();
+      get('priorityWarnings').innerHTML = warnings.length ? warnings.map(w => `<div class="dependency-warning"><strong>${w[0]}</strong><br>${w[1]}</div>`).join('') : '<div class="dependency-warning"><strong>Sequenza coerente</strong><br>Il pacchetto selezionato non presenta incompatibilità evidenti nella sequenza preliminare. Verificare comunque con diagnosi, sopralluogo e progettista.</div>';
+    }
+
+    function renderServices() {
+      get('serviceCards').innerHTML = Object.entries(serviceLevels).map(([key, level]) => `
+        <button class="service-card ${selectedService === key ? 'active' : ''}" data-service="${key}" style="text-align:left">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0">${level.name}</h3><span class="badge primary">${euro.format(level.fee)}</span></div>
+          <p class="muted" style="margin:8px 0 0">${level.description}</p>
+          <p class="fineprint" style="margin:10px 0 0">Costo interno stimato: ${euro.format(level.internal)} · Ore: ${level.hours}</p>
+        </button>`).join('');
+      document.querySelectorAll('.service-card').forEach(btn => btn.addEventListener('click', e => { selectedService = btn.dataset.service; updateAll(false); }));
+    }
+
+    function renderAlert() {
+      const last = s('lastCheck') || todayISO();
+      const next = addDays(last, 7);
+      const data = paybackData();
+      get('nextCheckMetric').textContent = next;
+      get('alertText').innerHTML = `
+        <strong>Alert settimanale BORGO OSS</strong><br>
+        Caso: ${s('caseName')} · Comune: ${s('town')}<br>
+        Fase: ${s('projectStage')} · Avanzamento: ${n('progress')}% · Rischio: ${riskLabel()}<br>
+        Prossimo check: ${next}<br>
+        Costo lavori stimato: ${euro.format(data.gross)} · Incentivi stimati: ${euro.format(data.totalBenefit)} · Payback netto: ${yearsText(data.netPayback)}<br>
+        Criticità aperte: ${get('issues').value || 'nessuna criticità segnalata'}
+      `;
+    }
+    function riskLabel() { return s('risk') === 'high' ? 'alto' : s('risk') === 'medium' ? 'medio' : 'basso'; }
+
+    function getCaseObject() {
+      const data = paybackData();
+      return {
+        savedAt: new Date().toISOString(),
+        caseName: s('caseName'), town: s('town'), buildingType: s('buildingType'), score: calculateScores().total,
+        grossWorks: data.gross, benefits: data.totalBenefit, netCost: data.net, netPayback: data.netPayback,
+        stage: s('projectStage'), nextCheck: addDays(s('lastCheck') || todayISO(), 7), interventions: selectedInterventions().map(i => i.name), service: serviceLevels[selectedService].name, userRole: s('userRole'), infoChannel: s('infoChannel'), co2Avoided: monitoringData().co2
+      };
+    }
+    function loadCases() { try { return JSON.parse(localStorage.getItem('borgoCasesV10') || '[]'); } catch { return []; } }
+    function saveCases(cases) { localStorage.setItem('borgoCasesV10', JSON.stringify(cases)); }
+    function renderCases() {
+      const cases = loadCases();
+      get('casesTable').innerHTML = cases.map(c => `<tr><td><strong>${c.caseName}</strong><div class="fineprint">${c.userRole || ''} · ${c.infoChannel || ''}</div></td><td>${c.town}</td><td>${c.score}/100</td><td>${euro.format(c.grossWorks)}</td><td>${euro.format(c.benefits)}</td><td>${euro.format(c.netCost)}</td><td>${yearsText(c.netPayback)}</td><td>${c.stage}</td><td>${c.nextCheck}</td></tr>`).join('') || '<tr><td colspan="9">Nessun caso salvato.</td></tr>';
+      renderDashboardAggregates();
+    }
+
+    function derivedQuantities() {
+      const area = Math.max(1, n('floorArea'));
+      const units = Math.max(1, n('units'));
+      const floors = Math.max(1, n('estimateFloors') || (s('buildingType') === 'Casa singola' ? 2 : 4));
+      const h = Math.max(2.4, n('storeyHeight') || 3);
+      const shape = Number(get('shapeFactor') ? s('shapeFactor') : 1.18);
+      const windowRatio = clamp((n('windowRatio') || 22) / 100, .05, .60);
+      const roofUsable = clamp((n('roofUsableRatio') || 45) / 100, 0, 1);
+      const shadingRatio = clamp((n('shadingRatio') || 50) / 100, 0, 1);
+      const mode = get('quantityMode') ? s('quantityMode') : 'geometric';
+
+      if (mode === 'simple') {
+        const opaqueFacade = Math.round(area * .50);
+        const roof = Math.round(area * .25);
+        const windows = Math.round(area * .155);
+        const pvKw = Math.max(3, Math.round(area * .018));
+        return {
+          area, units, floors, footprint: Math.round(area / floors), perimeter: null,
+          grossFacade: null, opaqueFacade, windows, roof,
+          shading: Math.round(windows * .50), pvKw,
+          storageKwh: Math.max(5, Math.round(pvKw * 1.1)),
+          solarThermal: Math.max(4, Math.round(units * 1.3)),
+          reliability: 'Bassa-media: rapporti semplificati su superficie riscaldata'
+        };
+      }
+
+      const footprint = Math.max(20, area / floors);
+      const perimeter = 4 * Math.sqrt(footprint) * shape;
+      const grossFacade = perimeter * floors * h;
+      const windows = grossFacade * windowRatio;
+      const opaqueFacade = Math.max(0, grossFacade - windows);
+      const roof = footprint * (shape > 1.25 ? 1.08 : 1.03);
+      const shading = windows * shadingRatio;
+      const pvKw = Math.max(3, Math.round((roof * roofUsable) / 6));
+      const storageKwh = Math.max(5, Math.round(pvKw * 1.1));
+      const solarThermal = Math.max(4, Math.min(Math.round(units * 1.3), Math.round(roof * .25)));
+      return {
+        area, units, floors,
+        footprint: Math.round(footprint),
+        perimeter: Math.round(perimeter),
+        grossFacade: Math.round(grossFacade),
+        opaqueFacade: Math.round(opaqueFacade),
+        windows: Math.round(windows),
+        roof: Math.round(roof),
+        shading: Math.round(shading),
+        pvKw, storageKwh, solarThermal,
+        reliability: 'Media: stima geometrica rapida da superficie, piani, forma e rapporto finestrato'
+      };
+    }
+
+    function renderQuantityEstimator() {
+      if (!get('estFootprintMetric')) return;
+      const q = derivedQuantities();
+      safeSet('estFootprintMetric', q.footprint + ' m²');
+      safeSet('estOpaqueFacadeMetric', q.opaqueFacade + ' m²');
+      safeSet('estWindowsMetric', q.windows + ' m²');
+      safeSet('estPvMetric', q.pvKw + ' kW');
+      safeSet('estimateReliability', q.reliability);
+    }
+
+
+        function render3DModel() {
+      const svg = get('building3dSvg');
+      if (!svg) return;
+      const q = derivedQuantities();
+      const floors = Math.max(1, Number(get('estimateFloors')?.value || Math.max(1, Math.round((n('units')||1)/4))));
+      const shapeLabel = get('shapeFactor')?.selectedOptions?.[0]?.textContent || 'Compatta';
+      const footprintRatio = clamp((q.footprint || 200) / 420, 0.58, 1.42);
+      const width = 180 * footprintRatio;
+      const depth = 105 * footprintRatio;
+      const floorH = clamp(170 / floors, 22, 42);
+      const height = floorH * floors;
+      const x = 255, y = 376;
+
+      const frontCols = clamp(Math.round(width / 34), 2, 7);
+      const frontRows = Math.max(1, floors);
+      const wx = width / (frontCols + 1), wy = height / (frontRows + 1);
+      const ww = Math.min(16, wx * 0.46), wh = Math.min(24, wy * 0.54);
+
+      const front = `${x},${y} ${x+width},${y} ${x+width},${y-height} ${x},${y-height}`;
+      const side = `${x+width},${y} ${x+width+depth*0.62},${y-depth*0.28} ${x+width+depth*0.62},${y-height-depth*0.28} ${x+width},${y-height}`;
+      const roofPoly = `${x},${y-height} ${x+width},${y-height} ${x+width+depth*0.62},${y-height-depth*0.28} ${x+depth*0.62},${y-height-depth*0.28}`;
+
+      let frontWindows = '';
+      for (let r=0; r<frontRows; r++) {
+        for (let c=0; c<frontCols; c++) {
+          const px = x + wx*(c+1) - ww/2;
+          const py = y - wy*(r+1) - wh/2;
+          frontWindows += `<rect x="${px.toFixed(1)}" y="${py.toFixed(1)}" width="${ww.toFixed(1)}" height="${wh.toFixed(1)}" fill="#b8cad0" stroke="#ffffff" stroke-width="1" />`;
+        }
+      }
+
+      /* Finestre della facciata laterale corrette: 1-2 colonne al massimo, allineate ai piani e con inclinazione coerente */
+      const sideCols = depth > 84 ? 2 : 1;
+      const sw = 13, sh = Math.min(22, wh*0.95);
+      let sideWindows = '';
+      for (let r=0; r<frontRows; r++) {
+        for (let c=0; c<sideCols; c++) {
+          const tX = x + width + (c+1) * ((depth*0.46)/(sideCols+1));
+          const tY = y - (r+1) * wy - (c+1) * 8;
+          const p1 = `${(tX-sw/2).toFixed(1)},${(tY-sh/2).toFixed(1)}`;
+          const p2 = `${(tX+sw/2).toFixed(1)},${(tY-sh/2-6).toFixed(1)}`;
+          const p3 = `${(tX+sw/2).toFixed(1)},${(tY+sh/2-6).toFixed(1)}`;
+          const p4 = `${(tX-sw/2).toFixed(1)},${(tY+sh/2).toFixed(1)}`;
+          sideWindows += `<polygon points="${p1} ${p2} ${p3} ${p4}" fill="#b8cad0" stroke="#ffffff" stroke-width="1" />`;
+        }
+      }
+
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="frontGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#d9cbbb"/><stop offset="100%" stop-color="#cdbca8"/></linearGradient>
+          <linearGradient id="sideGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#cbb8a3"/><stop offset="100%" stop-color="#bba48d"/></linearGradient>
+          <linearGradient id="roofGrad" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#b98f74"/><stop offset="100%" stop-color="#a57e63"/></linearGradient>
+        </defs>
+        <rect x="0" y="0" width="760" height="520" fill="transparent"/>
+        <polygon points="${front}" fill="url(#frontGrad)" stroke="#8f7a67" stroke-width="1.4" />
+        <polygon points="${side}" fill="url(#sideGrad)" stroke="#8f7a67" stroke-width="1.4" />
+        <polygon points="${roofPoly}" fill="url(#roofGrad)" stroke="#8f7a67" stroke-width="1.4" />
+        ${frontWindows}
+        ${sideWindows}
+        <rect x="${x+width*0.42}" y="${y-34}" width="${Math.max(24,width*0.14)}" height="34" fill="#7b604c" stroke="#5d4436" />
+        <text x="42" y="58" font-size="18" font-family="Helvetica, Arial, sans-serif" fill="#24251f" font-weight="700">Anteprima volumetrica indicativa</text>
+        <text x="42" y="84" font-size="13" font-family="Helvetica, Arial, sans-serif" fill="#6f675c">${s('caseName') || 'Caso senza nome'} · ${s('buildingType')} · ${s('town')}</text>
+        <text x="42" y="106" font-size="12" font-family="Helvetica, Arial, sans-serif" fill="#6f675c">Modello di base senza interventi</text>
+      `;
+      safeSet('modelFloorsMetric', floors);
+      safeSet('modelFacadeMetric', (q.opaqueFacade || 0) + ' m²');
+      safeSet('modelWindowsMetric', (q.windows || 0) + ' m²');
+      safeSet('modelRoofMetric', (q.roof || 0) + ' m²');
+      safeSet('modelPvMetric', (q.pvKw || 0) + ' kW');
+      safeSet('modelReadinessMetric', get('estimateReliability')?.textContent || '—');
+      const items = [
+        ['#d9cbbb', 'Volume di base', 'Volumetria costruita con superficie riscaldata, piani, altezza interpiano e forma in pianta.'],
+        ['#b8cad0', 'Serramenti stimati', 'Distribuzione indicativa delle finestre frontali e laterali basata sul rapporto finestre/facciata.'],
+        ['#b98f74', 'Copertura', 'La copertura è stimata dall’impronta dell’edificio; il dato serve anche per il potenziale fotovoltaico.'],
+        ['#fffaf3', 'Come usarlo', `Se il modello non assomiglia all’edificio reale, correggere prima i parametri geometrici. Forma attuale: ${shapeLabel}.`]
+      ];
+      const legendEl = get('modelLegend');
+      if (legendEl) legendEl.innerHTML = items.map(([color,title,text]) => `<div class="legend-item"><span class="legend-swatch" style="background:${color}"></span><div><strong>${title}</strong><span>${text}</span></div></div>`).join('');
+    }
+
+    function applyQuantitiesFromBuilding() {
+      const units = Math.max(1, n('units'));
+      const q = derivedQuantities();
+      const map = {
+        cappotto: q.opaqueFacade,
+        tetto: q.roof,
+        serramenti: q.windows,
+        schermature: q.shading,
+        distribuzione: units,
+        vmc: units,
+        fotovoltaico: q.pvKw,
+        accumulo: q.storageKwh,
+        solare_termico: q.solarThermal,
+        bacs: units,
+        pompa_calore: 1,
+        sismico: 1,
+        progettazione: 1,
+        imprevisti: 1
+      };
+      interventions.forEach(item => { if (map[item.id] !== undefined) item.qty = map[item.id]; });
+      updateAll();
+    }
+
+    function applyPreset(type) {
+      const sets = {
+        light: ['bacs','serramenti','fotovoltaico','progettazione','imprevisti'],
+        standard: ['cappotto','serramenti','pompa_calore','fotovoltaico','progettazione','imprevisti'],
+        deep: ['cappotto','tetto','serramenti','schermature','pompa_calore','distribuzione','vmc','fotovoltaico','accumulo','bacs','progettazione','imprevisti']
+      };
+      const selectedSet = new Set(sets[type]);
+      interventions.forEach(item => item.selected = selectedSet.has(item.id));
+      get('renovationScenario').value = type;
+      updateAll();
+    }
+
+    function updateAll(rebuildTable=true) {
+      updateRatesByProfile();
+      renderScores();
+      renderReadinessExplanation();
+      if (rebuildTable) renderInterventions(); else renderInterventions();
+      renderQuantityEstimator();
+      render3DModel();
+      renderCostMetrics();
+      renderBonusTable();
+      renderFinance();
+      renderRoadmap();
+      renderCaseSheet();
+      renderPriorityPlan();
+      renderServices();
+      renderAlert();
+      renderEngagement();
+      renderWorkflow();
+      renderMonitoring();
+      renderActors();
+      renderCases();
+      attachHelpTooltips();
+    }
+
+    function download(filename, text, type='text/plain') {
+      const blob = new Blob([text], { type });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function reportText() {
+      const data = paybackData();
+      return `BORGO OSS - Sintesi caso\nCaso: ${s('caseName')}\nComune: ${s('town')}\nScore SCORES: ${calculateScores().total}/100\nLivello OSS: ${serviceLevels[selectedService].name}\nInterventi selezionati: ${selectedInterventions().map(i => i.name).join('; ')}\nCosto lavori lordo: ${euro.format(data.gross)}\nIncentivi stimati: ${euro.format(data.totalBenefit)}\nCosto netto orientativo: ${euro.format(data.net)}\nRisparmio annuo stimato: ${euro.format(data.saving)}\nPayback netto: ${yearsText(data.netPayback)}\nSchema finanziario: ${s('financeScheme')}\nProssimo step: ${nextStepText(selectedService)}`;
+    }
+
+
+    const fieldHelp = {
+      caseName: 'Inserire un nome interno riconoscibile. Evitare dati sensibili non necessari. Esempio: Condominio Via Roma 12 o Casa singola frazione nord.',
+      town: 'Indicare il Comune in cui si trova l’edificio. Serve per aggregare la domanda per territorio, pianificare sportelli locali e produrre KPI per i comuni medi.',
+      buildingType: 'Selezionare la tipologia prevalente. Per condomìni e piccoli condomìni la readiness decisionale pesa di più perché servono assemblee, amministratore e consenso tra proprietari.',
+      year: 'Usare l’anno di costruzione o una stima per epoca edilizia. Il dato orienta dispersioni, impianti, priorità e potenziale di risparmio. Verificare con visura, pratiche edilizie o amministratore.',
+      floorArea: 'Inserire la superficie riscaldata indicativa in metri quadrati. Serve per precompilare quantità orientative di cappotto, copertura, serramenti e costo lavori. Non sostituisce il rilievo.',
+      units: 'Numero di unità immobiliari servite dal pacchetto. Nei condomìni aiuta a stimare costo per unità, comunicazione assembleare, impianti centralizzati e complessità decisionale.',
+      energyClass: 'Usare la classe APE se disponibile. Se non disponibile, inserire una classe stimata e segnare tra i documenti mancanti la necessità di APE o diagnosi.',
+      annualBill: 'Somma orientativa delle spese energetiche annue dell’edificio o delle unità coinvolte. Serve per stimare risparmi economici e payback. Per condomìni usare bollette centralizzate più stima consumi privati, se disponibili.',
+      renovationScenario: 'Scenario di riferimento per il pacchetto iniziale. Leggero significa interventi mirati; standard combina più misure; deep renovation mira a un salto prestazionale più ampio.',
+      fiscalProfile: 'Serve per applicare aliquote orientative. Verificare sempre normativa, massimali, requisiti soggettivi, capienza fiscale e compatibilità tra incentivi.',
+      vulnerable: 'Segnare sì se ci sono over 65, basso ISEE, difficoltà digitali, povertà energetica o altra barriera di accesso. Il dato aiuta a definire priorità sociale e tipo di accompagnamento.',
+      decisionStage: 'Indica quanto il proprietario o condominio è vicino alla decisione. Nei condomìni distinguere interesse informale, mandato dell’assemblea, preventivi già richiesti e delibera.',
+      billConcern: 'Da 0 a 5: quanto il tema bollette è percepito come urgente. Valore alto aumenta il potenziale energy/carbon e la motivazione al percorso.',
+      budgetStress: 'Da 0 a 5: difficoltà a sostenere spesa iniziale o rata. Valore alto riduce affordability e segnala bisogno di piano finanziario, incentivi e pacchetti per fasi.',
+      documents: 'Da 0 a 5: disponibilità di APE, bollette, planimetrie, dati impianto, verbali assembleari, preventivi. Valore basso suggerisce Starter o raccolta documentale prima della roadmap.',
+      ownerAgreement: 'Da 0 a 5: accordo tra proprietari o disponibilità dell’assemblea. Nei condomìni è un fattore critico: senza consenso, il caso può essere tecnicamente buono ma non implementabile.',
+      technicalEase: 'Da 0 a 5: facilità tecnica percepita. Considerare accessibilità facciate, spazi tecnici, copertura, centrale termica, vincoli, ponti termici, interferenze e necessità di autorizzazioni.',
+      constraints: 'Da 0 a 5: vincoli tecnici, urbanistici, paesaggistici, condominiali o di cantiere. Più è alto, più serve verifica specialistica prima di promettere tempi/costi.',
+      financeAccess: 'Da 0 a 5: possibilità di accedere a detrazioni, Conto Termico, prestito, mutuo green, fondi comunali/regionali o risorse proprie. Verificare capienza fiscale e bancabilità.',
+      urgency: 'Da 0 a 5: motivazione e urgenza percepita. Valore alto può derivare da bollette, impianto a fine vita, comfort scarso, muffa, scadenze incentivi o lavori già programmati.',
+      firstName: 'Dato per contatto e appuntamento. Raccogliere solo dati necessari al servizio e informare l’utente sul trattamento dati.',
+      lastName: 'Dato per identificare il referente. Nei condomìni può essere amministratore, consigliere o proprietario referente.',
+      email: 'Usare per conferma appuntamento, invio checklist documenti, roadmap e alert. Verificare che l’utente accetti comunicazioni di servizio.',
+      phone: 'Necessario per appuntamento telefonico e follow-up. Verificare che il recapito sia corretto prima di salvare il caso.',
+      taxCode: 'Campo opzionale. Serve solo se necessario per pratiche o verifica incentivi. Per pre-assessment può restare vuoto.',
+      userRole: 'Indicare il ruolo per adattare linguaggio e percorso. Un amministratore può gestire documenti e assemblea; un proprietario singolo richiede supporto più guidato.',
+      infoChannel: 'Serve per capire quale campagna funziona: Comune, evento pubblico, newsletter, social, locandina, passaparola o tecnico. Utile per KPI di engagement.',
+      requestSubject: 'Serve per assegnare il caso al livello corretto: orientamento, incentivi, stima, preventivi, assemblea, lavori in corso o monitoraggio.',
+      appointmentDate: 'Scegliere una data realistica. Per un OSS lean si può prevedere agenda mensile o quindicinale nei Comuni e slot telefonici settimanali.',
+      appointmentTime: 'Inserire ora in formato HH:MM. L’app genera testo conferma e file calendario.',
+      appointmentDuration: 'Durata consigliata per primo contatto: 30 minuti. Aumentare solo per sopralluoghi, assemblee o casi complessi.',
+      appointmentMode: 'Scegliere modalità in base a bisogno e vulnerabilità: telefono per primo filtro, sportello per supporto documenti, sopralluogo per Premium/Full.',
+      weeklySlots: 'Numero massimo di appuntamenti gestibili ogni settimana. Serve per dimensionare capacità operativa e stimare contatti annui.',
+      serviceWeeks: 'Settimane operative in un anno. Considerare ferie, chiusure, rendicontazione e periodi senza sportello.',
+      publicEvents: 'Numero di eventi locali previsti: assemblee pubbliche, incontri con amministratori, banche, ordini e associazioni.',
+      contactsPerEvent: 'Stima dei contatti generati da ogni evento. Usare un valore prudente e aggiornare dopo le prime campagne.',
+      conversionAssessment: 'Percentuale di contatti che arrivano a un pre-assessment. Misura efficacia dello sportello e chiarezza dell’offerta.',
+      conversionProject: 'Percentuale di assessment che diventano roadmap, preventivi o progetto. È il KPI più importante per dimostrare che l’OSS non è solo informativo.',
+      taxCapacity: 'Stima della capienza fiscale annua dell’utente o famiglia. Se bassa, la detrazione potrebbe non essere pienamente utilizzabile: valutare alternative o Conto Termico.',
+      deductionYears: 'Numero di anni su cui ripartire la detrazione. In molti casi è 10, ma va verificato in base alla norma vigente.',
+      furnitureCost: 'Spesa eventuale per mobili/elettrodomestici collegata a interventi ammessi. Inserire solo se pertinente e verificare requisiti.',
+      furnitureRate: 'Aliquota orientativa per bonus mobili. Verificare anno, massimali e condizioni di accesso.',
+      financeShare: 'Quota del costo netto che si intende finanziare. Valore alto aumenta la rata e richiede verifica di sostenibilità.',
+      loanRate: 'Tasso annuo ipotetico del prestito o mutuo green. Usare valori prudenziali e aggiornare con banca/finanziaria.',
+      loanYears: 'Durata del finanziamento. Confrontare rata mensile e risparmio energetico mensile per valutare affordability.',
+      financeScheme: 'Schema finanziario prevalente. Non è una promessa di finanziamento: serve per orientare il caso verso banca, mutuo green, condominio, ESCo o fondi propri.',
+      projectStage: 'Fase attuale del progetto. Serve per alert settimanali, dashboard e priorità del facilitatore.',
+      progress: 'Avanzamento lavori o del percorso in percentuale. Per fasi pre-cantiere usare una stima coerente: 10% pre-screening, 30% roadmap, 50% preventivi, 70% contratto, 90% fine lavori.',
+      lastCheck: 'Data dell’ultimo contatto o controllo. L’app calcola il prossimo alert settimanale.',
+      risk: 'Valutazione sintetica del rischio operativo. Alto se ci sono ritardi, extra-costi, documenti mancanti, conflitti condominiali o criticità tecniche.',
+      issues: 'Scrivere criticità aperte in modo operativo: cosa manca, chi deve fare cosa, entro quando. Evitare giudizi vaghi.',
+      baselineKwh: 'Consumo annuo prima degli interventi. Può derivare da bollette, diagnosi o stima. Serve per monitoraggio ex-post e CO2 evitata.',
+      postKwh: 'Consumo misurato o stimato dopo intervento. Se non ci sono ancora dati reali, indicare stima e aggiornare dopo 12 mesi.',
+      targetSaving: 'Target di risparmio energetico atteso. Confrontare con risparmio misurato per evidenziare performance gap.',
+      co2Factor: 'Fattore di emissione indicativo in kgCO2/kWh. Può cambiare per vettore energetico; usare valore documentato nei report.',
+      performanceContract: 'Indica se esiste garanzia prestazionale. Se sì, collegare target, responsabilità, misura e verifica.',
+      dataSharing: 'Consenso alla condivisione di dati aggregati o anonimi con il Comune. Utile per PAESC/SECAP e monitoraggio impatti territoriali.',
+      ossModel: 'Modello di servizio: facilitazione leggera, coordinamento della filiera o sviluppo all-inclusive. Per BORGO OSS piccolo è consigliabile coordinamento/facilitazione.',
+      coiPolicy: 'Policy per prevenire conflitti di interesse: criteri trasparenti, più preventivi, rotazione fornitori, albo qualificato o verifica esterna.'
+    };
+
+    const tableHelp = {
+      'Includi': 'Selezionare solo gli interventi da considerare nel pacchetto. I calcoli di costo, incentivi, risparmio e payback useranno solo le righe selezionate.',
+      'Intervento': 'Nome della misura e nota tecnica. La nota aiuta il facilitatore a spiegare perché l’intervento è utile o quando va verificato.',
+      'Categoria': 'Raggruppamento della misura: involucro, impianti, rinnovabili, controllo, co-benefit o tecnico-amministrativo.',
+      'Quantità': 'Valore orientativo modificabile. Può essere stimato da superficie, unità immobiliari o rilievo. Va affinato con computo metrico.',
+      'Unità': 'Unità di misura della quantità: m², kW, kWh, unità o lotto.',
+      'Costo unitario': 'Costo orientativo modificabile. Usare prezzari regionali, prezziari DEI, offerte o benchmark locali quando disponibili.',
+      'Costo lordo': 'Prodotto tra quantità e costo unitario. È una stima preliminare, non un computo definitivo.',
+      'Incentivo': 'Incentivo potenzialmente applicabile. La compatibilità effettiva dipende da requisiti tecnici, fiscali, massimali e cumulabilità.',
+      'Aliquota': 'Percentuale orientativa di beneficio. Deve essere aggiornata secondo normativa vigente, profilo fiscale e tipologia intervento.',
+      'Risparmio energia': 'Quota indicativa di risparmio associata alla misura. La somma viene limitata da un cap tecnico per evitare stime irrealistiche.'
+    };
+
+    function helpSpan(text) {
+      const span = document.createElement('span');
+      span.className = 'help-badge';
+      span.tabIndex = 0;
+      span.textContent = 'i';
+      span.setAttribute('data-tip', text);
+      span.setAttribute('aria-label', 'Istruzioni: ' + text);
+      return span;
+    }
+
+    function attachHelpTooltips() {
+      document.querySelectorAll('.field').forEach(field => {
+        const control = field.querySelector('input[id], select[id], textarea[id]');
+        const label = field.querySelector('label');
+        if (!control || !label || !fieldHelp[control.id]) return;
+        if (!label.querySelector('.help-badge')) label.appendChild(helpSpan(fieldHelp[control.id]));
+        control.setAttribute('title', fieldHelp[control.id]);
+      });
+
+      document.querySelectorAll('#interventionTable thead th').forEach(th => {
+        const key = th.childNodes[0]?.textContent?.trim() || th.textContent.trim();
+        if (!tableHelp[key] || th.querySelector('.help-badge')) return;
+        th.appendChild(helpSpan(tableHelp[key]));
+      });
+
+      document.querySelectorAll('.int-qty').forEach(el => el.setAttribute('title', tableHelp['Quantità']));
+      document.querySelectorAll('.int-cost').forEach(el => el.setAttribute('title', tableHelp['Costo unitario']));
+      document.querySelectorAll('.int-energy').forEach(el => el.setAttribute('title', tableHelp['Risparmio energia']));
+      document.querySelectorAll('.int-selected').forEach(el => el.setAttribute('title', tableHelp['Includi']));
+    }
+
+    function initEvents() {
+      document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+        get(btn.dataset.tab).classList.remove('hidden');
+      }));
+      document.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', () => updateAll(false)));
+      document.querySelectorAll('select').forEach(el => el.addEventListener('change', () => updateAll(false)));
+      get('applyQuantities').addEventListener('click', applyQuantitiesFromBuilding);
+      if (get('applyEstimatedQuantities')) get('applyEstimatedQuantities').addEventListener('click', applyQuantitiesFromBuilding);
+      get('presetLight').addEventListener('click', () => applyPreset('light'));
+      get('presetStandard').addEventListener('click', () => applyPreset('standard'));
+      get('presetDeep').addEventListener('click', () => applyPreset('deep'));
+      get('selectNone').addEventListener('click', () => { interventions.forEach(i => i.selected = false); updateAll(); });
+      get('selectAll').addEventListener('click', () => { interventions.forEach(i => i.selected = true); updateAll(); });
+      get('demoCondominio').addEventListener('click', () => { get('caseName').value='Condominio anni Settanta'; get('buildingType').value='Condominio'; get('year').value=1972; get('floorArea').value=2200; get('units').value=24; get('estimateFloors').value=5; get('shapeFactor').value='1.18'; get('windowRatio').value=22; get('annualBill').value=44000; get('energyClass').value='F'; applyQuantitiesFromBuilding(); applyPreset('standard'); });
+      get('demoCasa').addEventListener('click', () => { get('caseName').value='Casa singola'; get('buildingType').value='Casa singola'; get('year').value=1988; get('floorArea').value=180; get('units').value=1; get('estimateFloors').value=2; get('shapeFactor').value='1.00'; get('windowRatio').value=18; get('annualBill').value=3200; get('energyClass').value='E'; applyQuantitiesFromBuilding(); applyPreset('light'); });
+      get('printReport').addEventListener('click', () => window.print());
+      get('copySummary').addEventListener('click', async () => { await navigator.clipboard.writeText(reportText()); alert('Sintesi copiata negli appunti.'); });
+      get('downloadCaseSheet').addEventListener('click', () => download(('borgo_oss_scheda_' + ((s('caseName') || 'caso').replace(/[^a-z0-9]+/gi,'_').toLowerCase())).replace(/^_+|_+$/g,'') + '.txt', caseSheetText(), 'text/plain'));
+      get('copyCaseSheet').addEventListener('click', async () => { await navigator.clipboard.writeText(caseSheetText()); alert('Scheda caso copiata negli appunti.'); });
+      get('copyAlert').addEventListener('click', async () => { await navigator.clipboard.writeText(get('alertText').innerText); alert('Alert copiato negli appunti.'); });
+      get('copyBooking').addEventListener('click', async () => { await navigator.clipboard.writeText(bookingText()); alert('Conferma appuntamento copiata negli appunti.'); });
+      get('downloadBookingIcs').addEventListener('click', () => {
+        const date = (s('appointmentDate') || addDays(todayISO(), 7)).replaceAll('-','');
+        const time = (s('appointmentTime') || '0930').replace(':','').padEnd(4,'0');
+        const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${date}T${time}00\nDURATION:PT${n('appointmentDuration')}M\nSUMMARY:BORGO OSS - appuntamento ${s('caseName')}\nDESCRIPTION:${bookingText().replace(/\n/g,' ')}\nEND:VEVENT\nEND:VCALENDAR`;
+        download('borgo_oss_appuntamento.ics', ics, 'text/calendar');
+      });
+      get('saveCase').addEventListener('click', () => { const cases = loadCases(); cases.unshift(getCaseObject()); saveCases(cases); renderCases(); alert('Caso salvato nella dashboard locale.'); });
+      get('downloadIcs').addEventListener('click', () => {
+        const next = addDays(s('lastCheck') || todayISO(), 7).replaceAll('-','');
+        const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:${next}\nSUMMARY:BORGO OSS - check settimanale ${s('caseName')}\nDESCRIPTION:${get('alertText').innerText.replace(/\n/g,' ')}\nEND:VEVENT\nEND:VCALENDAR`;
+        download('borgo_oss_check_settimanale.ics', ics, 'text/calendar');
+      });
+      get('exportCsv').addEventListener('click', () => {
+        const rows = [['Caso','Comune','Score','Lavori','Incentivi','Netto','Payback netto','Fase','Prossimo check']].concat(loadCases().map(c => [c.caseName,c.town,c.score,c.grossWorks,c.benefits,c.netCost,Number.isFinite(c.netPayback)?c.netPayback:'',c.stage,c.nextCheck]));
+        download('borgo_oss_casi.csv', rows.map(r => r.map(v => '"' + String(v).replaceAll('"','""') + '"').join(';')).join('\n'), 'text/csv');
+      });
+      get('exportJson').addEventListener('click', () => download('borgo_oss_casi.json', JSON.stringify(loadCases(), null, 2), 'application/json'));
+      get('importJson').addEventListener('change', (e) => {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => { try { const data = JSON.parse(reader.result); if (Array.isArray(data)) { saveCases(data); renderCases(); } } catch { alert('File JSON non valido.'); } };
+        reader.readAsText(file);
+      });
+      get('clearCases').addEventListener('click', () => { if (confirm('Svuotare tutti i casi salvati nel browser?')) { saveCases([]); renderCases(); } });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      get('lastCheck').value = todayISO();
+      get('appointmentDate').value = addDays(todayISO(), 7);
+      initEvents();
+      applyQuantitiesFromBuilding();
+    });
+  </script>
+</body>
+</html>
